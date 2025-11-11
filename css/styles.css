@@ -88,9 +88,9 @@ header nav a:hover {
 
 /* === HERO PRINCIPAL === */
 .hero {
-  background: 
-    linear-gradient(rgba(0, 114, 79, 0.75), rgba(0, 114, 79, 0.75)),
-    url("../img/voluntariado.jpg") center/cover no-repeat;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("/Proyecto/img/voluntariado.jpg") center/cover no-repeat;
   color: white;
   text-align: center;
   padding: 100px 20px;
@@ -266,22 +266,40 @@ form select:focus {
   outline: none;
 }
 
-/* Fondo especial para páginas de formulario */
-body.form-bg {
-  background: 
-    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-    url("../img/login.webp") center/cover no-repeat fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
 /* Asegura que el formulario resalte sobre el fondo */
 section.formulario {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Fondo de las páginas de formulario */
+/* Fondo de las páginas de formulario */
+.form-page {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("/Proyecto/img/login.webp") center/cover no-repeat fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 15px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Si el body tiene display:flex, fuerza el fondo */
+body .form-page {
+  flex: 1;
+}
+
+/* Asegura que el formulario flote sobre el fondo */
+section.formulario {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
 }
 
 
