@@ -1,4 +1,7 @@
+<?php include '../includes/conexion.php'; ?>
+
 <?php
+
 // Simulación temporal (más adelante se conecta a MongoDB)
 $email = $_POST['email'] ?? '';
 $password = $_POST['password'] ?? '';
