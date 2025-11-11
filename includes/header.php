@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Plataforma de Voluntariados</title>
-    <link rel="stylesheet" href="/Proyecto/css/estilos.css">
+    <link rel="stylesheet" href="/Proyecto/css/styles.css">
 </head>
 
 <body>
