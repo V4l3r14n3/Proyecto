@@ -216,3 +216,149 @@ footer {
     transform: translateY(0);
   }
 }
+
+/* === SECCIÓN HERO === */
+.hero {
+  background: linear-gradient(135deg, #00bfa6, #00724f);
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+  animation: fadeInDown 1s ease;
+}
+
+.hero-texto h1 {
+  font-size: 2.4rem;
+  margin-bottom: 15px;
+}
+
+.hero-texto p {
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 25px;
+  line-height: 1.6;
+}
+
+/* === INFO (cards) === */
+.info {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.info h2 {
+  color: #00724f;
+  margin-bottom: 40px;
+  font-size: 1.8rem;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 1s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+  width: 80px;
+  margin-bottom: 15px;
+}
+
+/* === IMPACTO === */
+.impacto {
+  background-color: #f5f9f7;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.impacto h2 {
+  color: #00724f;
+  margin-bottom: 30px;
+}
+
+.estadisticas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.estadisticas div {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.estadisticas h3 {
+  color: #00bfa6;
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+/* === CTA FINAL === */
+.cta {
+  background: linear-gradient(135deg, #00724f, #00bfa6);
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.cta h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.cta p {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.btn.grande {
+  padding: 15px 35px;
+  font-size: 1.1rem;
+  border-radius: 40px;
+  background: white;
+  color: #00724f;
+  font-weight: bold;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.btn.grande:hover {
+  background: #ffd166;
+  transform: translateY(-3px);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+  .estadisticas {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+  .hero-texto h1 {
+    font-size: 1.8rem;
+  }
+}
