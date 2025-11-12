@@ -6,7 +6,7 @@ use MongoDB\Client;
 try {
     // Conexión local (puedes cambiar el nombre de la base)
     $cliente = new Client("mongodb://localhost:27017/");
-    $bd = $cliente->Proyecto;
+    $bd = $cliente->plataforma_voluntariado;
 
     // Colecciones que usaremos (puedes agregar más)
     $usuarios = $bd->usuarios;
