@@ -376,3 +376,42 @@ footer {
     font-size: 1.8rem;
   }
 }
+
+.mensaje-container {
+  text-align: center;
+  margin: 100px auto;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease;
+}
+
+.mensaje-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.mensaje-container p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.mensaje-container.success h2 { color: #00724f; }
+.mensaje-container.error h2 { color: #c0392b; }
+.mensaje-container.info h2 { color: #009c72; }
+
+.mensaje-container .btn {
+  background: linear-gradient(45deg, #00bfa6, #00724f);
+  color: white;
+  padding: 10px 25px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.3s ease;
+}
+
+.mensaje-container .btn:hover {
+  transform: translateY(-3px);
+}
