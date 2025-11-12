@@ -415,3 +415,22 @@ footer {
 .mensaje-container .btn:hover {
   transform: translateY(-3px);
 }
+
+.form-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.form-link a {
+  color: #00724f;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.form-link a:hover {
+  color: #00bfa6;
+  text-decoration: underline;
+}

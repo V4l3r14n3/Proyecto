@@ -7,13 +7,13 @@
     <a href="#">Crear Voluntariado</a>
     <a href="#">Voluntarios Inscritos</a>
     <a href="#">Mensajes</a>
-    <a href="../pages/logout.php">Cerrar Sesión</a>
+    <a href="../includes/logout.php">Cerrar Sesión</a>
 </div>
 
 <div class="main-content">
     <header>
         <h1>Panel de la Organización 🏢</h1>
-        <button class="logout" onclick="location.href='../pages/logout.php'">Salir</button>
+        <button class="logout" onclick="location.href='../includes/logout.php'">Salir</button>
     </header>
 
     <section class="cards">
