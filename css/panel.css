@@ -1,0 +1,97 @@
+/* === PANEL GENERAL === */
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  background-color: #f4f9f7;
+  color: #333;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* === SIDEBAR === */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(135deg, #00724f, #00bfa6);
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.sidebar a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* === CONTENIDO PRINCIPAL === */
+.main-content {
+  flex: 1;
+  padding: 40px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  color: #00724f;
+}
+
+.logout {
+  background: linear-gradient(45deg, #00bfa6, #00724f);
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout:hover {
+  background: #009c72;
+}
+
+/* === TARJETAS / SECCIONES === */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  width: 280px;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  color: #00724f;
+  margin-bottom: 10px;
+}
