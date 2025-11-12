@@ -1,18 +1,10 @@
-<?php 
-include '../includes/header.php'; 
+<?php include '../includes/header.php'; 
 include '../includes/conexion.php';
-
-// Obtener lista de organizaciones
-$organizaciones_existentes = $bd->usuarios->find(
-    ['rol' => 'organizacion'],
-    ['projection' => ['nombre_org' => 1, '_id' => 0]]
-);
 ?>
-
 <div class="form-page">
     <section class="formulario">
         <h2>Registro de Usuario</h2>
-        <form action="procesar_registro.php" method="POST" id="registroForm">
+        <form id="registroForm">
             <label>Nombre completo:</label>
             <input type="text" name="nombre" required>
 
@@ -33,6 +25,11 @@ $organizaciones_existentes = $bd->usuarios->find(
                 <select id="selectOrganizacion" name="nombre_org" style="display:none;">
                     <option value="">Selecciona una organización existente</option>
                     <?php 
+                    include '../includes/conexion.php';
+                    $organizaciones_existentes = $bd->usuarios->find(
+                        ['rol' => 'organizacion'],
+                        ['projection' => ['nombre_org' => 1, '_id' => 0]]
+                    );
                     foreach ($organizaciones_existentes as $org) {
                         if (!empty($org['nombre_org'])) {
                             echo '<option value="'.$org['nombre_org'].'">'.$org['nombre_org'].'</option>';
@@ -49,7 +46,40 @@ $organizaciones_existentes = $bd->usuarios->find(
     </section>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+document.getElementById('registroForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    const response = await fetch('procesar_registro.php', {
+        method: 'POST',
+        body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'success') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Registro exitoso!',
+            text: data.mensaje,
+            confirmButtonColor: '#00724f'
+        }).then(() => {
+            window.location.href = 'login.php';
+        });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.mensaje,
+            confirmButtonColor: '#00724f'
+        });
+    }
+});
+
+// Lógica de mostrar organización
 const rolSelect = document.getElementById("rol");
 const campoOrg = document.getElementById("campoOrganizacion");
 const selectOrg = document.getElementById("selectOrganizacion");
@@ -66,12 +96,7 @@ rolSelect.addEventListener("change", () => {
 });
 
 selectOrg.addEventListener("change", () => {
-    if (selectOrg.value === "nueva") {
-        inputOrg.style.display = "block";
-    } else {
-        inputOrg.style.display = "none";
-    }
+    inputOrg.style.display = selectOrg.value === "nueva" ? "block" : "none";
 });
 </script>
-
 <?php include '../includes/footer.php'; ?>

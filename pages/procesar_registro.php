@@ -1,10 +1,11 @@
 <?php
 include '../includes/conexion.php';
 
-$nombre = $_POST['nombre'];
-$email = $_POST['email'];
-$password = $_POST['password'];
-$rol = $_POST['rol'];
+// Leer datos del formulario
+$nombre = $_POST['nombre'] ?? '';
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+$rol = $_POST['rol'] ?? '';
 
 if ($rol === 'organizacion') {
     $nombre_org = !empty($_POST['nombre_org_nueva'])
@@ -14,7 +15,19 @@ if ($rol === 'organizacion') {
     $nombre_org = null;
 }
 
-$usuarios->insertOne([
+// Verificar si el correo ya existe
+$existe = $bd->usuarios->findOne(['email' => $email]);
+
+if ($existe) {
+    echo json_encode([
+        'status' => 'error',
+        'mensaje' => 'El correo ya está registrado. Intenta con otro.'
+    ]);
+    exit;
+}
+
+// Guardar usuario
+$bd->usuarios->insertOne([
     'nombre' => $nombre,
     'email' => $email,
     'password' => $password,
@@ -22,8 +35,7 @@ $usuarios->insertOne([
     'nombre_org' => $nombre_org
 ]);
 
-$titulo = "Registro exitoso";
-$mensaje = "Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión.";
-$tipo = "success";
-$link = "login.php";
-include '../includes/mensaje.php';
+echo json_encode([
+    'status' => 'success',
+    'mensaje' => 'Registro exitoso. ¡Bienvenido!',
+]);
