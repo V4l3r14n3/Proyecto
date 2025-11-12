@@ -23,7 +23,7 @@ if ($usuario && $usuario['password'] === $password) {
     $mensaje = "El correo o la contraseña son incorrectos.";
     $tipo = "error";
     $link = "login.php";
-    include '../includes/mensaje.php';
+    include '../Proyecto/includes/mensaje.php';
 }
 
 ?>
