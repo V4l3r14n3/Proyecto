@@ -26,5 +26,4 @@ $titulo = "Registro exitoso";
 $mensaje = "Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión.";
 $tipo = "success";
 $link = "login.php";
-include '../Proyecto/includes/mensaje.php';
-?>
+include '../includes/mensaje.php';
