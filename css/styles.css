@@ -416,21 +416,27 @@ footer {
   transform: translateY(-3px);
 }
 
+/* === ENLACES BAJO LOS BOTONES (login / registro) === */
 .form-link {
   text-align: center;
-  margin-top: 15px;
+  margin-top: 25px; /* separación del botón */
   font-size: 0.95rem;
-  color: #333;
 }
 
 .form-link a {
-  color: #00724f;
+  color: #00724f; /* color del botón */
   font-weight: 600;
   text-decoration: none;
-  transition: color 0.3s ease;
+  background: transparent;
+  transition: all 0.3s ease;
+  padding: 6px 12px;
+  border-radius: 20px;
 }
 
 .form-link a:hover {
-  color: #00bfa6;
-  text-decoration: underline;
+  background: linear-gradient(45deg, #00bfa6, #00724f);
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }

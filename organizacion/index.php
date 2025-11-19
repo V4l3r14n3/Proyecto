@@ -3,10 +3,10 @@
 
 <div class="sidebar">
     <h2>Organización</h2>
-    <a href="#">Perfil</a>
-    <a href="#">Crear Voluntariado</a>
-    <a href="#">Voluntarios Inscritos</a>
-    <a href="#">Mensajes</a>
+    <a href="perfil.php">Perfil</a>
+    <a href="crear_voluntariado.php">Crear Voluntariado</a>
+    <a href="voluntarios.php">Voluntarios Inscritos</a>
+    <a href="mensajes.php">Mensajes</a>
     <a href="../includes/logout.php">Cerrar Sesión</a>
 </div>
 

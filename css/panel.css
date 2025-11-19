@@ -95,3 +95,50 @@ header h1 {
   color: #00724f;
   margin-bottom: 10px;
 }
+
+//ORGANIZACION DE FORMULARIOS
+.sidebar {
+  width: 220px;
+  background: #00724f;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+}
+
+.sidebar a {
+  display: block;
+  margin: 12px 0;
+  color: white;
+  text-decoration: none;
+  transition: .3s;
+}
+
+.sidebar a:hover {
+  background: #00bfa6;
+  padding-left: 10px;
+  border-radius: 6px;
+}
+
+.main-content {
+  margin-left: 240px;
+  padding: 20px;
+}
+
+.form-area form input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+button {
+  background: #00724f;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+button:hover {
+  background: #00bfa6;
+}
