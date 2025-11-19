@@ -1,14 +1,7 @@
 <?php include '../includes/conexion.php'; ?>
+<?php include 'includes/layout.php'; ?>
 <link rel="stylesheet" href="../css/panel.css">
 
-<div class="sidebar">
-    <h2>Organización</h2>
-    <a href="perfil.php">Perfil</a>
-    <a href="crear_voluntariado.php">Crear Voluntariado</a>
-    <a href="voluntarios.php">Voluntarios Inscritos</a>
-    <a href="mensajes.php">Mensajes</a>
-    <a href="../includes/logout.php">Cerrar Sesión</a>
-</div>
 
 <div class="main-content">
     <header>
@@ -33,3 +26,4 @@
         </div>
     </section>
 </div>
+<?php include 'includes/layout_footer.php'; ?>
