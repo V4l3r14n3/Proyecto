@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../includes/conexion.php';
 
 $email = $_POST['email'] ?? '';
@@ -7,8 +8,9 @@ $password = $_POST['password'] ?? '';
 $usuario = $bd->usuarios->findOne(['email' => $email]);
 
 if ($usuario && $usuario['password'] === $password) {
-    session_start();
-    $_SESSION['usuario'] = $usuario;
+    // Convertir objeto MongoDB a array antes de guardarlo
+    $_SESSION['usuario'] = json_decode(json_encode($usuario), true);
+
 
     if ($usuario['rol'] === 'voluntario') {
         header("Location: ../voluntario/index.php");

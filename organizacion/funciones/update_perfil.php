@@ -1,18 +1,35 @@
 <?php
 session_start();
-include '../includes/conexion.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/rutas.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
+use MongoDB\BSON\ObjectId;
 
-$nombre = $_POST['nombre'];
-$nombre_org = $_POST['nombre_org'];
+// Obtener ID correctamente (podría ser string o arreglo con "$oid")
+$idRaw = $_SESSION['usuario']['_id'];
+$id = new ObjectId(is_array($idRaw) ? $idRaw['$oid'] : $idRaw);
 
+// Datos base a actualizar
+$actualizar = [
+    'nombre' => $_POST['nombre'],
+    'nombre_org' => $_POST['nombre_org']
+];
+
+// Contraseña opcional
+if (!empty($_POST['password_nueva'])) {
+    $actualizar['password'] = $_POST['password_nueva'];
+}
+
+// Guardar cambios en MongoDB
 $bd->usuarios->updateOne(
-    ['email' => $_SESSION['usuario']['email']],
-    ['$set' => ['nombre' => $nombre, 'nombre_org' => $nombre_org]]
+    ['_id' => $id],
+    ['$set' => $actualizar]
 );
 
-// Actualiza la sesión
-$_SESSION['usuario']['nombre'] = $nombre;
-$_SESSION['usuario']['nombre_org'] = $nombre_org;
+// Actualizar datos en sesión
+$_SESSION['usuario']['nombre'] = $_POST['nombre'];
+$_SESSION['usuario']['nombre_org'] = $_POST['nombre_org'];
 
-header("Location: perfil.php?update=ok");
-exit();
+// Redirección con indicador de éxito
+header("Location: ../perfil.php?status=ok");
+exit;
+?>

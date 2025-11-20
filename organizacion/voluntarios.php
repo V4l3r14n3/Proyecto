@@ -1,13 +1,11 @@
 <?php 
-session_start();
-include '../includes/conexion.php';
+include 'includes/layout.php'; 
+include $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 
 $voluntarios = $bd->inscripciones->find([
     "organizacion" => $_SESSION['usuario']['nombre_org']
 ]);
 ?>
-
-<link rel="stylesheet" href="../css/panel.css">
 
 <div class="main-content">
     <h2>Voluntarios inscritos 👥</h2>
@@ -21,10 +19,12 @@ $voluntarios = $bd->inscripciones->find([
 
         <?php foreach ($voluntarios as $v): ?>
         <tr>
-            <td><?= $v['nombre'] ?></td>
-            <td><?= $v['email'] ?></td>
-            <td><?= $v['actividad'] ?></td>
+            <td><?= htmlspecialchars($v['nombre']) ?></td>
+            <td><?= htmlspecialchars($v['email']) ?></td>
+            <td><?= htmlspecialchars($v['actividad']) ?></td>
         </tr>
         <?php endforeach; ?>
     </table>
 </div>
+
+<?php include 'includes/layout_footer.php'; ?>
