@@ -283,3 +283,53 @@ body.dark-mode input, body.dark-mode textarea {
   .sidebar { width: 100%; height: auto; position: relative; }
   .main-content { margin-left: 0; width: 100%; padding: 20px; }
 }
+/* ---- FIX FILTROS ---- */
+.filtros {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Input estandar */
+.filtros input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #bfbfbf;
+    width: 200px;
+    font-size: 0.95rem;
+}
+
+/* Button del filtro */
+.filtros button {
+    background: #00724f;
+    border-radius: 8px;
+    padding: 10px 20px;
+    white-space: nowrap;
+}
+
+/* Botón Limpiar (estilo botón real) */
+.btn-reset {
+    background: #ccc;
+    color: #333;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.9rem;
+    transition: background .3s;
+}
+
+.btn-reset:hover {
+    background: #999;
+}
+
+/* Quitar subrayado de botones */
+.btn-accion,
+.btn-reset,
+.filtros button {
+    text-decoration: none !important;
+}
