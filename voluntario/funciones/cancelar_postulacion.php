@@ -15,26 +15,25 @@ if (!isset($_GET['id'])) {
 }
 
 // Normalizar ID voluntario
-$rawId = $_SESSION['usuario']['_id'];
-if (is_array($rawId) && isset($rawId['$oid'])) {
-    $rawId = $rawId['$oid'];
+$rawVolId = $_SESSION['usuario']['_id'];
+if (is_array($rawVolId) && isset($rawVolId['$oid'])) {
+    $rawVolId = $rawVolId['$oid'];
 }
-$voluntarioId = new ObjectId($rawId);
+$voluntarioId = new ObjectId($rawVolId);
 
-// ID del evento
-$actividadIdString = $_GET['id'];
-$actividadIdObject = new ObjectId($actividadIdString);
+// ID de actividad como STRING (no objectId)
+$actividadId = $_GET['id'];
 
-// --- VALIDAR FECHA ---
-$actividad = $bd->actividades->findOne(["_id" => $actividadIdObject]);
+// Buscar actividad para validar fecha
+$actividad = $bd->actividades->findOne(["_id" => new ObjectId($actividadId)]);
 
 if (!$actividad) {
     echo json_encode(["status" => "error", "message" => "Actividad no encontrada"]);
     exit();
 }
 
+// Validar tiempo límite de cancelación (24h antes)
 $fechaEvento = strtotime($actividad['fecha_hora'] ?? $actividad['fecha']);
-
 if ($fechaEvento - time() <= 86400) {
     echo json_encode([
         "status" => "error",
@@ -43,19 +42,16 @@ if ($fechaEvento - time() <= 86400) {
     exit();
 }
 
-// --- BORRAR POSTULACIÓN (compatibilidad string/ObjectId) ---
+// Eliminar inscripción usando strings
 $resultado = $bd->inscripciones->deleteOne([
-    "voluntario_id" => $voluntarioId,
-    "$or" => [
-        ["actividad_id" => $actividadIdString],
-        ["actividad_id" => $actividadIdObject]
-    ]
+    "voluntario_id" => $rawVolId,
+    "actividad_id" => $actividadId
 ]);
 
 if ($resultado->getDeletedCount() > 0) {
-    echo json_encode(["status" => "success", "message" => "Tu inscripción ha sido cancelada correctamente."]);
+    echo json_encode(["status" => "success", "message" => "Inscripción cancelada correctamente."]);
 } else {
-    echo json_encode(["status" => "error", "message" => "No se encontró la inscripción para eliminar."]);
+    echo json_encode(["status" => "error", "message" => "No se encontró tu registro en la actividad."]);
 }
 
 exit();
