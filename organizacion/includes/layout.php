@@ -20,12 +20,12 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
         : $_SESSION['usuario']['nombre']) ?></h2>
 
     <nav>
-        <a href="<?= ORG_URL ?>index.php">Inicio</a>
-        <a href="<?= ORG_URL ?>perfil.php">Perfil</a>
-        <a href="<?= ORG_URL ?>crear_voluntariado.php">Crear Voluntariado</a>
-        <a href="<?= ORG_URL ?>mis_voluntariados.php">Mis voluntariados</a>
-        <a href="<?= ORG_URL ?>voluntarios.php">Voluntarios</a>
-        <a href="<?= ORG_URL ?>mensajes.php">Mensajes</a>
+        <a href="<?= ORG_URL ?>index.php">🏠 Inicio</a>
+        <a href="<?= ORG_URL ?>perfil.php">👤 Perfil</a>
+        <a href="<?= ORG_URL ?>crear_voluntariado.php">➕ Crear Voluntariado</a>
+        <a href="<?= ORG_URL ?>mis_voluntariados.php">📋 Mis voluntariados</a>
+        <a href="<?= ORG_URL ?>voluntarios.php">👥 Voluntarios</a>
+        <a href="<?= ORG_URL ?>mensajes.php">💬 Mensajes</a>
     </nav>
 
     <div class="theme-toggle">
@@ -39,7 +39,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
         </label>
     </div>
 
-    <a href="<?= BASE_URL ?>includes/logout.php" class="logout">Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>includes/logout.php" class="logout">🚪 Cerrar sesión</a>
 </div>
 
 <div class="main-content">

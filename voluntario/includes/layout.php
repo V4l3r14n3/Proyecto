@@ -9,22 +9,28 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
 }
 ?>
 
-<link rel="stylesheet" href="<?= CSS_URL ?>panel.css">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Voluntario</title>
+    <link rel="stylesheet" href="<?= CSS_URL ?>panel.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 
-<!-- SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<body> <!-- NECESARIO -->
+    
 <div class="sidebar">
-    <h2><?= htmlspecialchars(!empty($_SESSION['usuario'])
-        ? $_SESSION['usuario']['nombre'] : '') ?>
+    <h2>
+        <?= htmlspecialchars($_SESSION['usuario']['nombre'] ?? "Voluntario") ?>
     </h2>
 
     <nav>
-        <a href="<?= ORG_URL ?>index.php">Inicio</a>
-        <a href="<?= ORG_URL ?>perfil.php">Perfil</a>
-        <a href="<?= ORG_URL ?>voluntariado.php">Voluntariados</a>
-        <a href="<?= ORG_URL ?>mis_postulaciones.php">Mis Postulaciones</a>
-        <a href="<?= ORG_URL ?>mensajes.php">Mensajes</a>
+        <a href="<?= VOL_URL ?>index.php">🏠 Inicio</a>
+        <a href="<?= VOL_URL ?>perfil.php">👤 Mi Perfil</a>
+        <a href="<?= VOL_URL ?>voluntariados.php">🌱 Buscar voluntariados</a>
+        <a href="<?= VOL_URL ?>mis_postulaciones.php">📌 Mis postulaciones</a>
+        <a href="<?= VOL_URL ?>mensajes.php">💬 Mensajes</a>
     </nav>
 
     <div class="theme-toggle">
@@ -38,7 +44,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
         </label>
     </div>
 
-    <a href="<?= BASE_URL ?>includes/logout.php" class="logout">Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>includes/logout.php" class="logout">🚪 Cerrar sesión</a>
 </div>
 
 <div class="main-content">

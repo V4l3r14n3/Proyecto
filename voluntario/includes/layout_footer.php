@@ -1,11 +1,12 @@
 </div> <!-- cierre main-content -->
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.getElementById("darkToggle");
     const body = document.body;
     const label = document.querySelector(".theme-toggle .label");
 
-    // Cargar modo almacenado
+    // Leer modo almacenado
     if (localStorage.getItem("theme") === "dark") {
         body.classList.add("dark-mode");
         toggle.checked = true;
@@ -29,8 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
-
-
 
 </body>
 </html>
