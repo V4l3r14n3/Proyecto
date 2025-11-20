@@ -3,7 +3,7 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 use MongoDB\BSON\ObjectId;
 
-// Validación
+// Seguridad
 if (!isset($_SESSION['usuario'])) {
     echo json_encode(["status" => "error", "message" => "No autorizado"]);
     exit();
@@ -20,10 +20,19 @@ if (is_array($rawId) && isset($rawId['$oid'])) {
     $rawId = $rawId['$oid'];
 }
 $voluntarioId = new ObjectId($rawId);
-$actividadId = new ObjectId($_GET['id']);
 
-// Validar fecha (no permitir cancelar si faltan < 24h)
-$actividad = $bd->actividades->findOne(["_id" => $actividadId]);
+// ID del evento
+$actividadIdString = $_GET['id'];
+$actividadIdObject = new ObjectId($actividadIdString);
+
+// --- VALIDAR FECHA ---
+$actividad = $bd->actividades->findOne(["_id" => $actividadIdObject]);
+
+if (!$actividad) {
+    echo json_encode(["status" => "error", "message" => "Actividad no encontrada"]);
+    exit();
+}
+
 $fechaEvento = strtotime($actividad['fecha_hora'] ?? $actividad['fecha']);
 
 if ($fechaEvento - time() <= 86400) {
@@ -34,15 +43,20 @@ if ($fechaEvento - time() <= 86400) {
     exit();
 }
 
-// Eliminar postulación
-$bd->inscripciones->deleteOne([
+// --- BORRAR POSTULACIÓN (compatibilidad string/ObjectId) ---
+$resultado = $bd->inscripciones->deleteOne([
     "voluntario_id" => $voluntarioId,
-    "actividad_id" => (string)$actividadId
+    "$or" => [
+        ["actividad_id" => $actividadIdString],
+        ["actividad_id" => $actividadIdObject]
+    ]
 ]);
 
-echo json_encode([
-    "status" => "success",
-    "message" => "Has cancelado tu participación."
-]);
+if ($resultado->getDeletedCount() > 0) {
+    echo json_encode(["status" => "success", "message" => "Tu inscripción ha sido cancelada correctamente."]);
+} else {
+    echo json_encode(["status" => "error", "message" => "No se encontró la inscripción para eliminar."]);
+}
+
 exit();
 ?>
