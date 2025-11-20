@@ -52,7 +52,7 @@ $actividades = $bd->actividades->find([
                 $tiempoRestante = $fechaEvento - time();
                 $puedeCancelar = $tiempoRestante > 86400; // más de 24h
             ?>
-            <tr>
+            <tr data-id="<?= $actividad['_id'] ?>">
                 <td><?= htmlspecialchars($actividad['titulo']) ?></td>
                 <td><?= htmlspecialchars($actividad['organizacion']) ?></td>
                 <td><?= htmlspecialchars($actividad['ciudad'] ?? "No definida") ?></td>
@@ -82,16 +82,27 @@ function cancelar(id) {
         cancelButtonText: "No"
     }).then(async (result) => {
         if (result.isConfirmed) {
+            const fila = document.querySelector(`tr[data-id='${id}']`);
+            fila.style.opacity = "0";
+            fila.style.transform = "translateX(-20px)";
+            fila.style.transition = "0.4s ease";
+
             const request = await fetch("funciones/cancelar_postulacion.php?id=" + id);
             const data = await request.json();
 
-            Swal.fire({
-                icon: data.status,
-                text: data.message
-            }).then(() => location.reload());
+            setTimeout(() => {
+                if (data.status === "success") fila.remove();
+
+                Swal.fire({
+                    icon: data.status,
+                    text: data.message,
+                });
+
+            }, 400);
         }
     });
 }
 </script>
+
 
 <?php include 'includes/layout_footer.php'; ?>
