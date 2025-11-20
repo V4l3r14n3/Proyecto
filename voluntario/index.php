@@ -26,3 +26,4 @@ require_once "includes/layout.php";
         </div>
     </section>
 </div>
+<?php include 'includes/layout_footer.php'; ?>
