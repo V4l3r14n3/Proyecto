@@ -17,12 +17,19 @@ body {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 15px;
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
   height: 100vh;
-  transition: background-color .4s;
+  justify-content: flex-start;
+}
+
+/* Para agrupar las opciones del menú */
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .sidebar h2 {
@@ -43,6 +50,14 @@ body {
 .sidebar a:hover {
   background: rgba(255, 255, 255, 0.2);
   padding-left: 10px;
+}
+
+/* Asegurar que cerrar sesión quede pegado al toggle, no abajo perdido */
+.sidebar a.logout {
+  margin-top: 5px;
+  align-self: center;
+  width: 100%;
+  text-align: center;
 }
 
 /* === MAIN CONTENT CENTRADO === */
@@ -188,11 +203,15 @@ input:focus, textarea:focus {
        🌙 SWITCH MODO OSCURO MODERNO CON ANIMACIÓN
 ========================================================= */
 .theme-toggle {
-  margin-top: auto;
-  text-align: center;
-  padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255,255,255,0.2);
+  margin-top: auto; /* ahora solo empuja esto hasta el final del menú, NO todo */
 }
+
 
 .theme-toggle label {
   display: block;
