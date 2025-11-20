@@ -16,7 +16,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
 
 <div class="sidebar">
     <h2><?= htmlspecialchars(!empty($_SESSION['usuario'])
-        : $_SESSION['usuario']['nombre']) ?></h2>
+        ? $_SESSION['usuario']['nombre'] : '') ?>
+    </h2>
 
     <nav>
         <a href="<?= ORG_URL ?>index.php">Inicio</a>
