@@ -44,7 +44,19 @@ body {
   color: #fff;
   padding: 12px 15px;
   border-radius: 8px;
-  transition: background .3s, padding-left .3s;
+  transition: background 0.3s, padding-left 0.3s;
+}
+
+/* 🔹 Estilo especial para el botón cerrar sesión */
+.sidebar a.logout {
+  margin-top: 10px;          /* lo separa del toggle */
+  margin-bottom: 30px;       /* evita que se pegue al fondo */
+  background: rgba(255, 255, 255, 0.15);
+  text-align: center;
+}
+
+.sidebar a.logout:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar a:hover {
@@ -203,6 +215,7 @@ input:focus, textarea:focus {
        🌙 SWITCH MODO OSCURO MODERNO CON ANIMACIÓN
 ========================================================= */
 .theme-toggle {
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -212,7 +225,11 @@ input:focus, textarea:focus {
   margin-top: auto; /* ahora solo empuja esto hasta el final del menú, NO todo */
 }
 
-
+/* Estilo logout mejor alineado */
+.sidebar a.logout {
+  margin-top: 10px;
+  text-align: center;
+}
 .theme-toggle label {
   display: block;
   font-size: 14px;

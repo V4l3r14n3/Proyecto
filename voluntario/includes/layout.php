@@ -3,7 +3,7 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/rutas.php";
 
 // Evitar acceso no autorizado
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacion') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario') {
     header("Location: " . BASE_URL . "pages/login.php");
     exit();
 }
@@ -15,16 +15,14 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="sidebar">
-    <h2><?= htmlspecialchars(!empty($_SESSION['usuario']['nombre_org'])
-        ? $_SESSION['usuario']['nombre_org']
+    <h2><?= htmlspecialchars(!empty($_SESSION['usuario'])
         : $_SESSION['usuario']['nombre']) ?></h2>
 
     <nav>
         <a href="<?= ORG_URL ?>index.php">Inicio</a>
         <a href="<?= ORG_URL ?>perfil.php">Perfil</a>
-        <a href="<?= ORG_URL ?>crear_voluntariado.php">Crear Voluntariado</a>
-        <a href="<?= ORG_URL ?>mis_voluntariados.php">Mis voluntariados</a>
-        <a href="<?= ORG_URL ?>voluntarios.php">Voluntarios</a>
+        <a href="<?= ORG_URL ?>voluntariado.php">Voluntariados</a>
+        <a href="<?= ORG_URL ?>mis_postulaciones.php">Mis Postulaciones</a>
         <a href="<?= ORG_URL ?>mensajes.php">Mensajes</a>
     </nav>
 

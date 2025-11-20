@@ -13,7 +13,6 @@
 <div class="main-content">
     <header>
         <h1>Bienvenido, Voluntario 👋</h1>
-        <button class="logout" onclick="location.href='../includes/logout.php'">Salir</button>
     </header>
 
     <section class="cards">
