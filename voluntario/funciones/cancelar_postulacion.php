@@ -14,44 +14,55 @@ if (!isset($_GET['id'])) {
     exit();
 }
 
-// Normalizar ID voluntario
+// Normalizar voluntario ID
 $rawVolId = $_SESSION['usuario']['_id'];
 if (is_array($rawVolId) && isset($rawVolId['$oid'])) {
     $rawVolId = $rawVolId['$oid'];
 }
-$voluntarioId = new ObjectId($rawVolId);
+$voluntarioIdObj = new ObjectId($rawVolId);
 
-// ID de actividad como STRING (no objectId)
+// Normalizar ID actividad
 $actividadId = $_GET['id'];
+$actividadIdObj = new ObjectId($actividadId);
 
-// Buscar actividad para validar fecha
-$actividad = $bd->actividades->findOne(["_id" => new ObjectId($actividadId)]);
+// Validar fecha antes de borrar
+$actividad = $bd->actividades->findOne(["_id" => $actividadIdObj]);
 
 if (!$actividad) {
     echo json_encode(["status" => "error", "message" => "Actividad no encontrada"]);
     exit();
 }
 
-// Validar tiempo límite de cancelación (24h antes)
+// Validar límite de 24 horas
 $fechaEvento = strtotime($actividad['fecha_hora'] ?? $actividad['fecha']);
 if ($fechaEvento - time() <= 86400) {
-    echo json_encode([
-        "status" => "error",
-        "message" => "No puedes cancelar. Faltan menos de 24 horas."
-    ]);
+    echo json_encode(["status" => "error", "message" => "No puedes cancelar. Faltan menos de 24 horas."]);
     exit();
 }
 
-// Eliminar inscripción usando strings
+// 🔥 Eliminar la inscripción aceptando string u ObjectId
 $resultado = $bd->inscripciones->deleteOne([
-    "voluntario_id" => $rawVolId,
-    "actividad_id" => $actividadId
+    '$and' => [
+        [
+            '$or' => [
+                ["voluntario_id" => $rawVolId],
+                ["voluntario_id" => $voluntarioIdObj],
+            ]
+        ],
+        [
+            '$or' => [
+                ["actividad_id" => $actividadId],
+                ["actividad_id" => $actividadIdObj],
+            ]
+        ]
+    ]
 ]);
 
+
 if ($resultado->getDeletedCount() > 0) {
-    echo json_encode(["status" => "success", "message" => "Inscripción cancelada correctamente."]);
+    echo json_encode(["status" => "success", "message" => "Tu inscripción ha sido cancelada correctamente."]);
 } else {
-    echo json_encode(["status" => "error", "message" => "No se encontró tu registro en la actividad."]);
+    echo json_encode(["status" => "error", "message" => "No se encontró tu registro en esta actividad."]);
 }
 
 exit();
