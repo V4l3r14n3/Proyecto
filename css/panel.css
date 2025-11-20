@@ -6,6 +6,7 @@ body {
   color: #333;
   display: flex;
   min-height: 100vh;
+  transition: background-color .4s, color .4s;
 }
 
 /* === SIDEBAR === */
@@ -16,18 +17,19 @@ body {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
   position: fixed;
-  top: 0;
   left: 0;
+  top: 0;
   height: 100vh;
+  transition: background-color .4s;
 }
 
 .sidebar h2 {
   text-shadow: 0 1px 4px rgba(0,0,0,0.25);
   text-align: center;
-  margin-bottom: 15px;
-  font-size: 1.3rem;
+  margin-bottom: 10px;
+  font-size: 1.35rem;
 }
 
 .sidebar a {
@@ -35,7 +37,7 @@ body {
   color: #fff;
   padding: 12px 15px;
   border-radius: 8px;
-  transition: background 0.3s, padding-left 0.3s;
+  transition: background .3s, padding-left .3s;
 }
 
 .sidebar a:hover {
@@ -43,55 +45,48 @@ body {
   padding-left: 10px;
 }
 
-/* === AJUSTE GENERAL DE MAIN-CONTENT PARA CENTRAR === */
+/* === MAIN CONTENT CENTRADO === */
 .main-content {
   margin-left: 240px;
   padding: 40px;
   width: calc(100% - 240px);
   display: flex;
   flex-direction: column;
-  align-items: center; /* CENTRA TODO */
+  align-items: center;
+  transition: background-color .4s;
 }
 
-/* === TITULOS === */
 .main-content h2 {
   width: 100%;
   max-width: 600px;
   text-align: center;
   color: #00724f;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 1.8rem;
 }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-header h1 {
-  color: #00724f;
-}
-
-/* === BOTÓN SALIR/GENÉRICO === */
-button,
-.logout {
+/* === BOTONES === */
+button, .logout {
   background: linear-gradient(45deg, #00bfa6, #00724f);
   color: white;
   padding: 12px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: .3s;
+  transition: background .3s;
 }
 
-button:hover,
-.logout:hover {
+button:hover, .logout:hover {
   background: #009c72;
 }
 
-/* === TARJETAS / DASHBOARD === */
+button {
+  max-width: 300px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* === TARJETAS === */
 .cards {
   display: flex;
   flex-wrap: wrap;
@@ -101,10 +96,10 @@ button:hover,
 .card {
   background: #fff;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   padding: 25px;
   width: 280px;
-  transition: transform 0.3s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform .3s, background-color .4s;
 }
 
 .card:hover {
@@ -113,61 +108,48 @@ button:hover,
 
 .card h3 {
   color: #00724f;
-  margin-bottom: 10px;
 }
 
-/* === ESTÉTICA DE FORMULARIOS === */
-.formulario-panel,
-.perfil-form {
+/* === FORMULARIOS === */
+.formulario-panel, .perfil-form {
   background: #fff;
   padding: 35px;
-  border-radius: 14px;
+  border-radius: 12px;
   width: 100%;
   max-width: 600px;
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: background-color .4s, border-color .4s;
 }
 
-.formulario-panel label,
-.perfil-form label {
+label {
   font-weight: bold;
-  display: block;
-  margin-top: 12px;
 }
 
-.formulario-panel input,
-.formulario-panel textarea,
-.perfil-form input {
-  border: 2px solid #e0e0e0;
-  transition: .3s;
+input, textarea {
+  border: 2px solid #dcdcdc;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  transition: border-color .3s, background-color .3s;
 }
 
-.formulario-panel input:focus,
-.formulario-panel textarea:focus,
-.perfil-form input:focus {
+input:focus, textarea:focus {
   border-color: #00bfa6;
 }
-.formulario-panel button,
-.perfil-form button {
-  margin-top: 20px;
-  background: #00724f;
-  color: white;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: .3s;
-} 
 
+/* === TABLAS === */
 .tabla {
-  max-width: 1000px;
-  border-collapse: collapse;
-  background: #fff;
+  max-width: 950px;
+  width: 100%;
   margin-top: 20px;
+  background: #fff;
+  border-collapse: collapse;
   border-radius: 10px;
   overflow: hidden;
+  transition: background-color .4s;
 }
 
 .tabla th {
@@ -178,410 +160,126 @@ button:hover,
 
 .tabla td {
   padding: 10px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid #e6e6e6;
 }
 
 .tabla tr:hover {
-  background-color: #f0f8f5;
-}
-.tabla .acciones button {
-  margin-right: 8px;
+  background: #eef8f3;
 }
 
-.tabla .acciones button:last-child {
-  margin-right: 0;
-}
-
-input[type="url"] {
-  border: 2px solid #00bfa6;
-  border-radius: 8px;
-  padding: 10px;
-}
-input[type="url"]:focus {
-  border-color: #00724f;
-  outline: none;
-}
-.filtros {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
-  align-items: center;
-}
-
-.filtros input {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 180px;
-  font-size: 0.9rem;
-}
-
-.filtros button {
-  background: #00724f;
-  color: white;
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.filtros button:hover {
-  background: #00bfa6;
-}
-
-.btn-reset {
-  text-decoration: none;
-  background: #ccc;
-  color: #333;
-  padding: 10px 15px;
-  border-radius: 6px;
-  transition: 0.3s;
-}
-
-.btn-reset:hover {
-  background: #999;
-}
-/* === BOTONES DE ACCIONES (EDITAR, ELIMINAR) === */
+/* === BOTONES DE ACCIONES === */
 .btn-accion {
   display: inline-block;
   padding: 8px 14px;
   border-radius: 8px;
-  font-size: 0.9rem;
-  text-decoration: none;
   color: white;
   cursor: pointer;
-  transition: 0.3s;
+  margin-right: 6px;
+  transition: transform .3s;
 }
 
-.btn-editar {
-  background: #00724f;
-}
+.btn-editar { background: #00724f; }
+.btn-editar:hover { transform: translateY(-2px); background: #00bfa6; }
 
-.btn-editar:hover {
-  background: #00bfa6;
-  transform: translateY(-2px);
-}
+.btn-eliminar { background: #d93025; }
+.btn-eliminar:hover { transform: translateY(-2px); background: #b8130a; }
 
-.btn-eliminar {
-  background: #d93025;
-}
-
-.btn-eliminar:hover {
-  background: #b8130a;
-  transform: translateY(-2px);
-}
-
-/* === BOTÓN SUBMIT ESTÁNDAR === */
-button {
-  width: 100%;
-  max-width: 300px;
-  margin: 10px auto;
-  font-size: 1rem;
-}
-
-/* === RESPONSIVE PARA CELULAR === */
-@media (max-width: 900px) {
-
-  .sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
-  }
-
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-    padding: 20px;
-  }
-
-  .tabla {
-    font-size: 14px;
-  }
-
-  button {
-    max-width: 100%;
-  }
-}
-
-/* ---------- BOTÓN MODO OSCURO ---------- */
-.modo-btn {
-  background: #222;
-  padding: 12px;
-  text-align: center;
-  border-radius: 10px;
+/* =========================================================
+       🌙 SWITCH MODO OSCURO MODERNO CON ANIMACIÓN
+========================================================= */
+.theme-toggle {
   margin-top: auto;
-  cursor: pointer;
-  transition: .3s;
+  text-align: center;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.2);
 }
 
-.modo-btn:hover {
-  background: #444;
-}
-
-/* ---------- MODO OSCURO ACTIVADO ---------- */
-.dark-mode {
-  background-color: #1b1b1b !important;
-  color: #f5f5f5 !important;
-}
-
-.dark-mode .sidebar {
-  background: linear-gradient(135deg, #00382b, #00594c);
-}
-
-.dark-mode .sidebar a {
-  color: #fff;
-}
-
-.dark-mode .main-content {
-  background-color: #1e1e1e;
-}
-
-.dark-mode .formulario-panel,
-.dark-mode .perfil-form {
-  background: #2b2b2b;
-  border: 1px solid #444;
-}
-
-.dark-mode input,
-.dark-mode textarea {
-  background: #333;
-  color: #fff;
-  border: 1px solid #555;
-}
-
-.dark-mode .tabla {
-  background: #2b2b2b;
-  color: white;
-}
-
-.dark-mode .tabla th {
-  background: #00594c;
-}
-
-.dark-mode .btn-editar {
-  background: #009c72;
-}
-
-.dark-mode .btn-eliminar {
-  background: #b8130a;
-}
-/* --- Transición suave para Dark Mode --- */
-body, .sidebar, .main-content, 
-.formulario-panel, .perfil-form, 
-input, textarea, .tabla, .tabla th,
-.tabla td, .card, button, .btn-editar, .btn-eliminar {
-  transition: background-color 0.35s ease, 
-              color 0.35s ease, 
-              border-color 0.35s ease;
-}
-/* Animación cuando se activa modo oscuro */
-.dark-mode-transition {
-  animation: fadeMode 0.4s ease;
-}
-
-@keyframes fadeMode {
-  from {
-    opacity: 0.4;
-  }
-  to {
-    opacity: 1;
-  }
-}
-/* --- CONTENEDOR DEL MODO OSCURO --- */
-.modo-container {
-  position: absolute;
-  top: 20px;
-  right: 25px;
+.theme-toggle label {
+  display: block;
+  font-size: 14px;
+  opacity: .9;
 }
 
 /* --- Switch estilo iOS --- */
 .switch {
   position: relative;
-  display: inline-block;
   width: 55px;
   height: 28px;
+  margin: auto;
 }
 
 .switch input {
   opacity: 0;
-  width: 0;
-  height: 0;
 }
 
-/* Fondo */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background-color: #00bfa6;
-  border-radius: 34px;
-  transition: .4s;
-}
-
-/* Botón circular */
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 22px;
-  width: 22px;
-  left: 4px;
-  bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: .4s;
-}
-
-/* Animación cuando está activado */
-input:checked + .slider {
-  background-color: #5a53ff; /* Morado elegante para modo oscuro */
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-/* Suavizado general */
-body, .sidebar, .main-content, button, .card, input, textarea {
-  transition: background-color .4s ease, color .4s ease, border-color .4s ease;
-}
-
-/* Animación fade suave */
-.dark-mode-transition {
-  animation: fadeMode .4s ease;
-}
-
-@keyframes fadeMode {
-  from { opacity: .4; }
-  to { opacity: 1; }
-}
-/* === CONTENEDOR DEL MODO === */
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  z-index: 10;
-}
-
-.theme-toggle .label {
-  font-weight: 600;
-  color: #00724f;
-}
-
-/* === SWITCH ESTILO iOS CON ICONOS === */
-.switch {
-  position: relative;
-  width: 65px;
-  height: 30px;
-  display: inline-block;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* Fondo */
 .slider {
   position: absolute;
   inset: 0;
-  background-color: #00bfa6;
-  border-radius: 40px;
-  transition: .4s;
+  background: #00bfa6;
+  border-radius: 50px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 5px;
+  padding: 4px;
+  transition: background .4s;
 }
 
-/* Iconos dentro */
-.icon {
-  font-size: 18px;
-  opacity: .6;
-  transition: .3s;
-}
-
-.sun {
-  margin-right: auto;
-}
-
-.moon {
-  margin-left: auto;
-  opacity: 0;
-}
-
-/* Botón circular */
 .slider::before {
   content: "";
   position: absolute;
-  height: 24px;
-  width: 24px;
+  height: 22px;
+  width: 22px;
   background: white;
   border-radius: 50%;
   left: 4px;
-  bottom: 3px;
-  transition: .4s;
+  transition: transform .4s;
 }
 
-/* Activado */
-input:checked + .slider {
-  background-color: #5a53ff;
+.switch input:checked + .slider {
+  background: #6b63ff;
 }
 
-input:checked + .slider::before {
-  transform: translateX(33px);
+.switch input:checked + .slider::before {
+  transform: translateX(26px);
 }
 
-/* Iconos cambian */
-input:checked + .slider .moon {
-  opacity: 1;
+/* === ICONOS ANIMADOS === */
+.sun, .moon {
+  font-size: 16px;
+  opacity: .6;
+  transition: opacity .3s;
 }
 
-input:checked + .slider .sun {
-  opacity: 0;
-}
+.switch input:checked + .slider .moon { opacity: 1; }
+.switch input:not(:checked) + .slider .sun { opacity: 1; }
 
-/* Animación general de cambio */
-body, .sidebar, .main-content, button, .card, input, textarea {
-  transition: background-color .4s ease, color .4s ease, border-color .4s ease;
-}
-
-.dark-mode-transition {
-  animation: fadeSwitch .4s ease;
-}
-
-@keyframes fadeSwitch {
-  from { opacity: .4; }
-  to { opacity: 1; }
-}
-/* === COLORES DEL MODO OSCURO === */
+/* =========================================================
+                  🌘 MODO OSCURO ACTIVO
+========================================================= */
 body.dark-mode {
-  background-color: #1b1b1b;
-  color: #e8e8e8;
+  background: #1b1b1b;
+  color: #ececec;
 }
 
-body.dark-mode .sidebar {
-  background: #121212;
-}
+body.dark-mode .sidebar { background: #0f3027; }
+body.dark-mode .main-content { background: #1b1b1b; }
 
-body.dark-mode .main-content,
-.dark-mode .card,
-.dark-mode .formulario-panel,
-.dark-mode .perfil-form,
-.dark-mode .tabla {
-  background: #2a2a2a;
-  color: white;
+body.dark-mode .card,
+body.dark-mode .formulario-panel,
+body.dark-mode .perfil-form,
+body.dark-mode .tabla {
+  background: #2d2d2d;
   border-color: #444;
 }
 
 body.dark-mode input, body.dark-mode textarea {
   background: #333;
-  color: white;
+  color: #fff;
   border: 1px solid #555;
 }
 
-body.dark-mode table tr:hover {
-  background: #3c3c3c;
+/* === RESPONSIVE === */
+@media (max-width: 900px) {
+  .sidebar { width: 100%; height: auto; position: relative; }
+  .main-content { margin-left: 0; width: 100%; padding: 20px; }
 }

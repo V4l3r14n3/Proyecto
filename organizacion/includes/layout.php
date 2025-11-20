@@ -31,20 +31,18 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
     <a href="<?= ORG_URL ?>mis_voluntariados.php">Mis voluntariados</a>
     <a href="<?= ORG_URL ?>voluntarios.php">Voluntarios</a>
     <a href="<?= ORG_URL ?>mensajes.php">Mensajes</a>
-    div class="theme-toggle">
-    <span class="label">Modo oscuro</span>
+    <div class="theme-toggle">
+        <span class="label">Modo oscuro</span>
 
-    <label class="switch">
-        <input type="checkbox" id="darkToggle">
-        <span class="slider">
-            <span class="icon sun">☀️</span>
-            <span class="icon moon">🌙</span>
-        </span>
-    </label>
-</div>
-<a href="<?= BASE_URL ?>includes/logout.php">Cerrar sesión</a>
-<
-
+        <label class="switch">
+            <input type="checkbox" id="darkToggle">
+            <span class="slider">
+                <span class="icon sun">☀️</span>
+                <span class="icon moon">🌙</span>
+            </span>
+        </label>
     </div>
+    <a href="<?= BASE_URL ?>includes/logout.php">Cerrar sesión</a>
+</div>
 
-    <div class="main-content">
+<div class="main-content">
