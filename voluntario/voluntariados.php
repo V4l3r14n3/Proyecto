@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 use MongoDB\BSON\ObjectId;
 
 // Obtener ID del voluntario autenticado
-$idVoluntario = $_SESSION['usuario']['_id'];
+$idVoluntario = new MongoDB\BSON\ObjectId($_SESSION['usuario']['_id']);
 
 // Obtener voluntariados disponibles
 $voluntariados = $bd->actividades->find();
@@ -15,7 +15,11 @@ $postulaciones = $bd->inscripciones->find(["id_voluntario" => $idVoluntario])->t
 // Convertir lista de inscripciones a IDs para validar si ya está inscrito
 $inscritos = [];
 foreach ($postulaciones as $p) {
-    $inscritos[(string)$p["id_actividad"]] = true;
+    $idAct = $p["id_actividad"] instanceof MongoDB\BSON\ObjectId 
+                ? (string)$p["id_actividad"] 
+                : (string)new MongoDB\BSON\ObjectId($p["id_actividad"]);
+
+    $inscritos[$idAct] = true;
 }
 ?>
 
