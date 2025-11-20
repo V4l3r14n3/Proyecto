@@ -1,33 +1,44 @@
 <?php
 include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
-
 use MongoDB\BSON\ObjectId;
 
-// Verifica acceso
+// Verifica sesión
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario') {
     header("Location: ../pages/login.php");
     exit();
 }
 
-// Obtener ID del voluntario correctamente
+// Normalizar ID voluntario
 $rawId = $_SESSION['usuario']['_id'];
-
 if (is_array($rawId) && isset($rawId['$oid'])) {
     $rawId = $rawId['$oid'];
 }
-
 $idVoluntario = new ObjectId($rawId);
 
-// Cargar voluntariados disponibles
-$voluntariados = $bd->actividades->find([]);
+//=========   FILTROS 🚀   ==========//
+$filtro = [];
 
-// Cargar postulaciones del voluntario
+if (!empty($_GET['buscar'])) {
+    $filtro['titulo'] = ['$regex' => $_GET['buscar'], '$options' => 'i'];
+}
+
+if (!empty($_GET['ciudad'])) {
+    $filtro['ciudad'] = ['$regex' => $_GET['ciudad'], '$options' => 'i'];
+}
+
+if (!empty($_GET['fecha'])) {
+    $filtro['fecha'] = $_GET['fecha'];
+}
+
+// Obtener eventos filtrados
+$voluntariados = $bd->actividades->find($filtro);
+
+// Obtener sus postulaciones
 $postulaciones = $bd->inscripciones->find([
     'voluntario_id' => $idVoluntario
 ]);
 
-// Convertimos a lista para consultar rápido
 $postuladosIds = [];
 foreach ($postulaciones as $p) {
     $postuladosIds[] = (string)$p['actividad_id'];
@@ -39,7 +50,19 @@ foreach ($postulaciones as $p) {
 
 <div class="main-content">
 
-    <h2>Voluntariados Disponibles 🌱</h2>
+    <h2>Voluntariados Disponibles 🔍</h2>
+
+    <!-- ======== FILTROS ======== -->
+    <form method="GET" class="filtros">
+        <input type="text" name="buscar" placeholder="Buscar por título..." value="<?= $_GET['buscar'] ?? '' ?>">
+
+        <input type="text" name="ciudad" placeholder="Ciudad..." value="<?= $_GET['ciudad'] ?? '' ?>">
+
+        <input type="date" name="fecha" value="<?= $_GET['fecha'] ?? '' ?>">
+
+        <button type="submit">Filtrar</button>
+        <a href="voluntariados.php" class="btn-reset">Limpiar</a>
+    </form>
 
     <table class="tabla">
         <tr>
@@ -51,23 +74,22 @@ foreach ($postulaciones as $p) {
         </tr>
 
         <?php foreach ($voluntariados as $v): ?>
-
-            <?php 
+            <?php
             $idActividad = (string)$v['_id'];
             $fechaEvento = strtotime($v['fecha_hora'] ?? $v['fecha']);
-            $falta24Horas = $fechaEvento - time() <= 86400; 
+            $falta24Horas = $fechaEvento - time() <= 86400;
             ?>
 
             <tr>
                 <td><?= htmlspecialchars($v['titulo']) ?></td>
                 <td><?= htmlspecialchars($v['descripcion']) ?></td>
-                <td><?= htmlspecialchars($v['ciudad'] ?? 'No definida') ?></td>
+                <td><?= htmlspecialchars($v['ciudad'] ?? "No definida") ?></td>
                 <td><?= htmlspecialchars($v['fecha_hora'] ?? $v['fecha']) ?></td>
                 <td>
 
                     <?php if (in_array($idActividad, $postuladosIds)): ?>
 
-                        <span style="color:green; font-weight:bold;">✔ Ya inscrito</span>
+                        <span style="color:green; font-weight:bold;">✔ Inscrito</span>
 
                     <?php elseif ($falta24Horas): ?>
 
@@ -81,7 +103,6 @@ foreach ($postulaciones as $p) {
 
                 </td>
             </tr>
-
         <?php endforeach; ?>
     </table>
 </div>
@@ -90,15 +111,15 @@ foreach ($postulaciones as $p) {
 function alertaNoDisponible() {
     Swal.fire({
         icon: "error",
-        title: "No disponible ⛔",
-        text: "Solo puedes postularte hasta 24 horas antes del evento."
+        title: "Cerrado ⛔",
+        text: "Debes postularte mínimo 24 horas antes del evento."
     });
 }
 
 function postular(id) {
     Swal.fire({
-        title: "¿Confirmas postularte?",
-        text: "Una vez inscrito podrás ver el evento en tus postulaciones.",
+        title: "¿Postularte?",
+        text: "Confirmas que deseas inscribirte en este voluntariado.",
         icon: "question",
         showCancelButton: true,
         confirmButtonColor: "#00724f",
@@ -107,8 +128,8 @@ function postular(id) {
         cancelButtonText: "Cancelar"
     }).then(async (result) => {
         if (result.isConfirmed) {
-            const response = await fetch("funciones/postular.php?id=" + id);
-            const data = await response.json();
+            const request = await fetch("funciones/postular.php?id=" + id);
+            const data = await request.json();
 
             Swal.fire({
                 icon: data.status,
@@ -120,3 +141,5 @@ function postular(id) {
 </script>
 
 <?php include 'includes/layout_footer.php'; ?>
+<?php if (isset($_GET['status']) && $_GET['status'] === 'postulado'): ?>
+<script>
