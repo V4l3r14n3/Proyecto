@@ -1,14 +1,8 @@
-<?php include '../includes/conexion.php'; ?>
+<?php include '../includes/conexion.php'; 
+require_once "includes/layout.php"; 
+?>
 <link rel="stylesheet" href="../css/panel.css">
 
-<div class="sidebar">
-    <h2>Voluntario</h2>
-    <a href="#">Mi Perfil</a>
-    <a href="#">Mis Actividades</a>
-    <a href="#">Buscar Voluntariados</a>
-    <a href="#">Mensajes</a>
-    <a href="../includes/logout.php">Cerrar Sesión</a>
-</div>
 
 <div class="main-content">
     <header>
