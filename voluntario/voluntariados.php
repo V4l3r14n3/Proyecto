@@ -142,4 +142,3 @@ function postular(id) {
 
 <?php include 'includes/layout_footer.php'; ?>
 <?php if (isset($_GET['status']) && $_GET['status'] === 'postulado'): ?>
-<script>
