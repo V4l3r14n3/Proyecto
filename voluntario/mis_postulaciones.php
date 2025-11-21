@@ -56,8 +56,15 @@ $actividades = $bd->actividades->find([
                 <td><?= htmlspecialchars($actividad['titulo']) ?></td>
                 <td><?= htmlspecialchars($actividad['organizacion']) ?></td>
                 <td><?= htmlspecialchars($actividad['ciudad'] ?? "No definida") ?></td>
-                <td><?= htmlspecialchars($actividad['fecha_hora'] ?? $actividad['fecha']) ?></td>
-                <td>
+<td>
+                    <?php
+                    $fechaMostrar = isset($v['fecha_hora']) ? $v['fecha_hora'] : $v['fecha'];
+
+                    // Convertir y formatear fecha
+                    $fechaFormateada = date("d/m/Y h:i A", strtotime($fechaMostrar));
+                    echo $fechaFormateada;
+                    ?>
+                </td>                <td>
                     <?php if ($puedeCancelar): ?>
                         <button class="btn-eliminar" onclick="cancelar('<?= $actividad['_id'] ?>')">Cancelar</button>
                     <?php else: ?>
