@@ -1,6 +1,7 @@
 <?php
 include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
+
 use MongoDB\BSON\ObjectId;
 
 // Verifica sesión
@@ -84,7 +85,16 @@ foreach ($postulaciones as $p) {
                 <td><?= htmlspecialchars($v['titulo']) ?></td>
                 <td><?= htmlspecialchars($v['descripcion']) ?></td>
                 <td><?= htmlspecialchars($v['ciudad'] ?? "No definida") ?></td>
-                <td><?= htmlspecialchars($v['fecha_hora'] ?? $v['fecha']) ?></td>
+                <td>
+                    <?php
+                    $fechaMostrar = isset($v['fecha_hora']) ? $v['fecha_hora'] : $v['fecha'];
+
+                    // Convertir y formatear fecha
+                    $fechaFormateada = date("d/m/Y h:i A", strtotime($fechaMostrar));
+                    echo $fechaFormateada;
+                    ?>
+                </td>
+
                 <td>
 
                     <?php if (in_array($idActividad, $postuladosIds)): ?>
@@ -108,36 +118,36 @@ foreach ($postulaciones as $p) {
 </div>
 
 <script>
-function alertaNoDisponible() {
-    Swal.fire({
-        icon: "error",
-        title: "Cerrado ⛔",
-        text: "Debes postularte mínimo 24 horas antes del evento."
-    });
-}
+    function alertaNoDisponible() {
+        Swal.fire({
+            icon: "error",
+            title: "Cerrado ⛔",
+            text: "Debes postularte mínimo 24 horas antes del evento."
+        });
+    }
 
-function postular(id) {
-    Swal.fire({
-        title: "¿Postularte?",
-        text: "Confirmas que deseas inscribirte en este voluntariado.",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "#00724f",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, postularme",
-        cancelButtonText: "Cancelar"
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            const request = await fetch("funciones/postular.php?id=" + id);
-            const data = await request.json();
+    function postular(id) {
+        Swal.fire({
+            title: "¿Postularte?",
+            text: "Confirmas que deseas inscribirte en este voluntariado.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#00724f",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, postularme",
+            cancelButtonText: "Cancelar"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const request = await fetch("funciones/postular.php?id=" + id);
+                const data = await request.json();
 
-            Swal.fire({
-                icon: data.status,
-                text: data.message
-            }).then(() => location.reload());
-        }
-    });
-}
+                Swal.fire({
+                    icon: data.status,
+                    text: data.message
+                }).then(() => location.reload());
+            }
+        });
+    }
 </script>
 
 <?php include 'includes/layout_footer.php'; ?>
