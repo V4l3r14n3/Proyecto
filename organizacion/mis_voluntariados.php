@@ -60,7 +60,15 @@ $voluntariados = $bd->actividades->find($filtro);
                 <td><?= htmlspecialchars($v['titulo']) ?></td>
                 <td><?= htmlspecialchars($v['descripcion']) ?></td>
                 <td><?= htmlspecialchars($v['ciudad'] ?? 'No definida') ?></td>
-                <td><?= htmlspecialchars($v['fecha_hora'] ?? $v['fecha']) ?></td>
+                <td>
+                    <?php
+                    $fechaMostrar = isset($v['fecha_hora']) ? $v['fecha_hora'] : $v['fecha'];
+
+                    // Convertir y formatear fecha
+                    $fechaFormateada = date("d/m/Y h:i A", strtotime($fechaMostrar));
+                    echo $fechaFormateada;
+                    ?>
+                </td>
                 <td>
                     <a href="funciones/editar_voluntariado.php?id=<?= $v['_id'] ?>" class="btn-accion btn-editar">✏️ Editar</a>
                     <a href="funciones/eliminar_voluntariado.php?id=<?= $v['_id'] ?>" class="btn-accion btn-eliminar">🗑️ Eliminar</a>
