@@ -30,5 +30,5 @@ $bd->mensajes->insertOne([
 ]);
 
 header("Location: " . ($_SESSION['usuario']['rol'] == "organizacion" 
-    ? "../mensajes.php" : "../mensajes.php"));
+    ? "../mensajes_org.php" : "../mensajes_voluntario.php"));
 exit();

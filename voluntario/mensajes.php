@@ -3,29 +3,28 @@ include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 use MongoDB\BSON\ObjectId;
 
-// Verifica acceso
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== "organizacion") {
+// Validación de acceso
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== "voluntario") {
     header("Location: ../pages/login.php");
     exit();
 }
 
-$idOrg = $_SESSION['usuario']['nombre_org'];
+$idVoluntario = (string)$_SESSION['usuario']['_id'];
 
-// Obtener mensajes dirigidos al usuario
+// Obtener mensajes dirigidos al voluntario
 $mensajes = $bd->mensajes->find([
-    "para" => $idOrg
+    "para" => $idVoluntario
 ]);
-
 ?>
 
 <link rel="stylesheet" href="<?= CSS_URL ?>panel.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <div class="main-content">
-    <h2>📩 Mensajes Recibidos</h2>
+    <h2>📩 Mis mensajes</h2>
 
     <form method="POST" action="funciones/enviar_mensaje.php" class="filtros">
-        <input type="text" name="para" placeholder="Enviar mensaje a voluntario (ID)">
+        <input type="text" name="para" placeholder="Enviar mensaje a organización (Nombre exacto)">
         <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
         <button type="submit">Enviar</button>
     </form>
