@@ -28,8 +28,9 @@ if (!empty($_GET['ciudad'])) {
     $filtro['ciudad'] = ['$regex' => $_GET['ciudad'], '$options' => 'i'];
 }
 
+// Corrección: usar fecha_hora con regex
 if (!empty($_GET['fecha'])) {
-    $filtro['fecha'] = $_GET['fecha'];
+    $filtro['fecha_hora'] = ['$regex' => $_GET['fecha']];
 }
 
 // Obtener eventos filtrados
@@ -77,40 +78,28 @@ foreach ($postulaciones as $p) {
         <?php foreach ($voluntariados as $v): ?>
             <?php
             $idActividad = (string)$v['_id'];
-            $fechaEvento = strtotime($v['fecha_hora'] ?? $v['fecha']);
+            $fechaEvento = strtotime($v['fecha_hora']);
             $falta24Horas = $fechaEvento - time() <= 86400;
             ?>
-
             <tr>
                 <td><?= htmlspecialchars($v['titulo']) ?></td>
                 <td><?= htmlspecialchars($v['descripcion']) ?></td>
                 <td><?= htmlspecialchars($v['ciudad'] ?? "No definida") ?></td>
                 <td>
                     <?php
-                    $fechaMostrar = isset($v['fecha_hora']) ? $v['fecha_hora'] : $v['fecha'];
-
-                    // Convertir y formatear fecha
-                    $fechaFormateada = date("d/m/Y h:i A", strtotime($fechaMostrar));
+                    $fechaFormateada = date("d/m/Y h:i A", strtotime($v['fecha_hora']));
                     echo $fechaFormateada;
                     ?>
                 </td>
 
                 <td>
-
                     <?php if (in_array($idActividad, $postuladosIds)): ?>
-
                         <span style="color:green; font-weight:bold;">✔ Inscrito</span>
-
                     <?php elseif ($falta24Horas): ?>
-
                         <button class="btn-eliminar" onclick="alertaNoDisponible()">No disponible</button>
-
                     <?php else: ?>
-
                         <button class="btn-editar" onclick="postular('<?= $idActividad ?>')">Postularme</button>
-
                     <?php endif; ?>
-
                 </td>
             </tr>
         <?php endforeach; ?>
