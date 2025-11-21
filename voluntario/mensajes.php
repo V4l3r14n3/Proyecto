@@ -1,5 +1,5 @@
 <?php
-include '../includes/layout.php';
+include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario') {
