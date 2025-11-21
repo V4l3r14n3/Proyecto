@@ -1,34 +1,24 @@
 <?php
-session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
+use MongoDB\BSON\ObjectId;
+use MongoDB\BSON\UTCDateTime;
 
-if (!isset($_SESSION['usuario'])) {
-    echo json_encode(["status" => "error", "message" => "No autorizado"]);
-    exit();
-}
+session_start();
 
-$de = $_SESSION['usuario']['rol'] === "organizacion"
-    ? $_SESSION['usuario']['nombre_org']
-    : (string)$_SESSION['usuario']['_id'];
+$mensaje = trim($_POST['mensaje'] ?? "");
+$receptor = $_POST['receptor'] ?? null;
+$remitente = $_SESSION['usuario']['_id'] ?? null;
 
-$rol_emisor = $_SESSION['usuario']['rol'];
-$para = $_POST['para'];
-$mensaje = trim($_POST['mensaje']);
-
-if (empty($para) || empty($mensaje)) {
-    echo json_encode(["status" => "error", "message" => "Debe llenar todos los campos"]);
-    exit();
+if (!$mensaje || !$receptor || !$remitente) {
+    die("Datos incompletos.");
 }
 
 $bd->mensajes->insertOne([
-    "de" => $de,
-    "para" => $para,
-    "rol_emisor" => $rol_emisor,
+    "remitente_id" => new ObjectId((string)$remitente),
+    "receptor_id" => new ObjectId((string)$receptor),
     "mensaje" => $mensaje,
-    "fecha" => date("Y-m-d H:i:s"),
-    "estado" => "no_leido"
+    "fecha" => new UTCDateTime(time() * 1000)
 ]);
 
-header("Location: " . ($_SESSION['usuario']['rol'] == "organizacion" 
-    ? "../mensajes_org.php" : "../mensajes_voluntario.php"));
-exit();
+echo "<script>history.back();</script>";
+?>

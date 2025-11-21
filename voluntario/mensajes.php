@@ -1,49 +1,63 @@
 <?php
-include 'includes/layout.php';
+include '../includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
-use MongoDB\BSON\ObjectId;
 
-// Validación de acceso
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== "voluntario") {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario') {
     header("Location: ../pages/login.php");
     exit();
 }
 
 $idVoluntario = (string)$_SESSION['usuario']['_id'];
 
-// Obtener mensajes dirigidos al voluntario
-$mensajes = $bd->mensajes->find([
-    "para" => $idVoluntario
-]);
+$organizaciones = $bd->usuarios->find(["rol" => "organizacion"]);
 ?>
 
 <link rel="stylesheet" href="<?= CSS_URL ?>panel.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function cargarMensajes() {
+    let id_otro = document.getElementById("usuario_receptor").value;
+    if (!id_otro) return;
+
+    fetch("../funciones/cargar_mensajes.php?id_otro=" + id_otro)
+        .then(res => res.json())
+        .then(data => {
+            let area = document.getElementById("chat");
+            area.innerHTML = "";
+
+            data.forEach(m => {
+                let clase = m.remitente_id === "<?= $idVoluntario ?>" ? "msg-right" : "msg-left";
+                area.innerHTML += `<div class="${clase}">${m.mensaje}<br><small>${m.fecha}</small></div>`;
+            });
+
+            area.scrollTop = area.scrollHeight;
+        });
+}
+</script>
 
 <div class="main-content">
-    <h2>📩 Mis mensajes</h2>
+<h2>Mensajes 📩</h2>
 
-    <form method="POST" action="funciones/enviar_mensaje.php" class="filtros">
-        <input type="text" name="para" placeholder="Enviar mensaje a organización (Nombre exacto)">
-        <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
-        <button type="submit">Enviar</button>
-    </form>
+<select id="usuario_receptor" onchange="cargarMensajes()">
+    <option value="">Selecciona organización</option>
+    <?php foreach ($organizaciones as $org): ?>
+        <option value="<?= $org['_id'] ?>"><?= $org['nombre'] ?></option>
+    <?php endforeach; ?>
+</select>
 
-    <table class="tabla">
-        <tr>
-            <th>De</th>
-            <th>Mensaje</th>
-            <th>Fecha</th>
-        </tr>
+<div id="chat" class="chat-box"></div>
 
-        <?php foreach ($mensajes as $m): ?>
-            <tr>
-                <td><?= htmlspecialchars($m['de']) ?></td>
-                <td><?= htmlspecialchars($m['mensaje']) ?></td>
-                <td><?= date("d/m/Y h:i A", strtotime($m['fecha'])) ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+<form method="POST" action="../funciones/enviar_mensaje.php">
+    <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
+    <input type="hidden" name="receptor" id="input-receptor">
+    <button type="submit">Enviar</button>
+</form>
 </div>
 
-<?php include 'includes/layout_footer.php'; ?>
+<script>
+// Mantiene el ID seleccionado para enviar mensaje
+document.getElementById("usuario_receptor").addEventListener("change", (e) => {
+    document.getElementById("input-receptor").value = e.target.value;
+});
+</script>
+
+<?php include '../includes/layout_footer.php'; ?>
