@@ -7,10 +7,24 @@ session_start();
 
 $mensaje = trim($_POST['mensaje'] ?? "");
 $receptor = $_POST['receptor'] ?? null;
-$remitente = $_SESSION['usuario']['_id'] ?? null;
+$remitenteRaw = $_SESSION['usuario']['_id'] ?? null;
+
+// Normalizar el id del remitente
+$remitente = is_array($remitenteRaw) ? $remitenteRaw['$oid'] : $remitenteRaw;
 
 if (!$mensaje || !$receptor || !$remitente) {
-    die("Datos incompletos.");
+    echo "
+    <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo enviar el mensaje. Faltan datos.'
+        }).then(() => {
+            history.back();
+        });
+    </script>";
+    exit();
 }
 
 $bd->mensajes->insertOne([
@@ -20,5 +34,18 @@ $bd->mensajes->insertOne([
     "fecha" => new UTCDateTime(time() * 1000)
 ]);
 
-echo "<script>history.back();</script>";
+echo "
+<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Mensaje enviado',
+        text: 'Tu mensaje fue enviado correctamente.',
+        timer: 1800,
+        showConfirmButton: false
+    }).then(() => {
+        history.back();
+    });
+</script>";
+exit();
 ?>

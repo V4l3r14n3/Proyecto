@@ -1,18 +1,25 @@
 <?php
 include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
+use MongoDB\BSON\ObjectId;
 
+// Validación de rol
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario') {
     header("Location: ../pages/login.php");
     exit();
 }
 
-$idVoluntario = (string)$_SESSION['usuario']['_id'];
+// Obtener ID normalizado
+$rawId = $_SESSION['usuario']['_id'];
+$idVoluntario = is_array($rawId) ? $rawId['$oid'] : $rawId;
 
+// Obtener organizaciones
 $organizaciones = $bd->usuarios->find(["rol" => "organizacion"]);
 ?>
 
 <link rel="stylesheet" href="<?= CSS_URL ?>panel.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 function cargarMensajes() {
     let id_otro = document.getElementById("usuario_receptor").value;
@@ -40,13 +47,13 @@ function cargarMensajes() {
 <select id="usuario_receptor" onchange="cargarMensajes()">
     <option value="">Selecciona organización</option>
     <?php foreach ($organizaciones as $org): ?>
-        <option value="<?= $org['_id'] ?>"><?= $org['nombre'] ?></option>
+        <option value="<?= $org['_id'] ?>"><?= $org['nombre_org'] ?></option>
     <?php endforeach; ?>
 </select>
 
 <div id="chat" class="chat-box"></div>
 
-<form method="POST" action="../funciones/enviar_mensaje.php">
+<form method="POST" action="funciones/enviar_mensaje.php">
     <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
     <input type="hidden" name="receptor" id="input-receptor">
     <button type="submit">Enviar</button>
@@ -60,4 +67,4 @@ document.getElementById("usuario_receptor").addEventListener("change", (e) => {
 });
 </script>
 
-<?php include '../includes/layout_footer.php'; ?>
+<?php include 'includes/layout_footer.php'; ?>

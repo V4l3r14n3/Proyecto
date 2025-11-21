@@ -7,18 +7,35 @@ session_start();
 
 $mensaje = trim($_POST['mensaje'] ?? "");
 $receptor = $_POST['receptor'] ?? null;
-$remitente = $_SESSION['usuario']['_id'] ?? null;
+$rawId = $_SESSION['usuario']['_id'] ?? null;
+
+// Normalizar ID
+$remitente = is_array($rawId) ? $rawId['$oid'] : $rawId;
 
 if (!$mensaje || !$receptor || !$remitente) {
-    die("Datos incompletos.");
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+    <script>
+        Swal.fire({ icon: 'error', title: 'Error', text: 'Debe escribir un mensaje.' })
+            .then(() => history.back());
+    </script>";
+    exit();
 }
 
 $bd->mensajes->insertOne([
-    "remitente_id" => new ObjectId((string)$remitente),
-    "receptor_id" => new ObjectId((string)$receptor),
+    "remitente_id" => new ObjectId($remitente),
+    "receptor_id" => new ObjectId($receptor),
     "mensaje" => $mensaje,
     "fecha" => new UTCDateTime(time() * 1000)
 ]);
 
-echo "<script>history.back();</script>";
+echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Mensaje enviado',
+        timer: 1500,
+        showConfirmButton: false
+    }).then(() => location.reload());
+</script>";
+exit();
 ?>

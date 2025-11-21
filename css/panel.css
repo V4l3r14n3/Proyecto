@@ -403,3 +403,54 @@ tr {
 .filtros button {
     text-decoration: none !important;
 }
+
+/* === SELECT DESPLEGABLE PERSONALIZADO === */
+
+select {
+  width: 100%;
+  max-width: 600px;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #dcdcdc;
+  background: #ffffff;
+  color: #333;
+  cursor: pointer;
+  transition: border-color .3s, background-color .3s, box-shadow .3s;
+}
+
+/* Hover */
+select:hover {
+  border-color: #00bfa6;
+}
+
+/* Focus (cuando está seleccionado) */
+select:focus {
+  border-color: #00bfa6;
+  box-shadow: 0px 0px 6px rgba(0, 191, 166, 0.5);
+  outline: none;
+}
+
+/* Opciones internas */
+select option {
+  background: white;
+  color: #333;
+  padding: 10px;
+}
+
+/* === MODO OSCURO === */
+body.dark-mode select {
+  background: #2c2c2c;
+  border: 1px solid #666;
+  color: #fff;
+}
+
+body.dark-mode select:focus {
+  border-color: #00c291;
+  box-shadow: 0px 0px 6px rgba(0, 191, 166, 0.7);
+}
+
+body.dark-mode select option {
+  background: #222;
+  color: #eaeaea;
+}
