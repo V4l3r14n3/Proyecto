@@ -5,24 +5,24 @@ use MongoDB\BSON\ObjectId;
 session_start();
 
 $id_otro = $_GET['id_otro'] ?? null;
-$rawUser = $_SESSION['usuario']['_id'] ?? null;
+$id_usuarioRaw = $_SESSION['usuario']['_id'] ?? null;
 
 // Normalizar ID
-$id_usuario = is_array($rawUser) ? $rawUser['$oid'] : $rawUser;
+$id_usuario = is_array($id_usuarioRaw) ? $id_usuarioRaw['$oid'] : $id_usuarioRaw;
 
 if (!$id_otro || !$id_usuario) {
     echo json_encode([]);
     exit();
 }
 
-$idUsuarioObj = new ObjectId($id_usuario);
-$idOtroObj = new ObjectId($id_otro);
+$idUsuario = new ObjectId((string)$id_usuario);
+$idOtro = new ObjectId((string)$id_otro);
 
 $mensajes = $bd->mensajes->find(
     [
         '$or' => [
-            ['remitente_id' => $idUsuarioObj, 'receptor_id' => $idOtroObj],
-            ['remitente_id' => $idOtroObj, 'receptor_id' => $idUsuarioObj]
+            ['remitente_id' => $idUsuario, 'receptor_id' => $idOtro],
+            ['remitente_id' => $idOtro, 'receptor_id' => $idUsuario]
         ]
     ],
     ['sort' => ['fecha' => 1]]

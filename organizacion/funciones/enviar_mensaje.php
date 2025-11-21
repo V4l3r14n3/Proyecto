@@ -7,35 +7,37 @@ session_start();
 
 $mensaje = trim($_POST['mensaje'] ?? "");
 $receptor = $_POST['receptor'] ?? null;
-$rawId = $_SESSION['usuario']['_id'] ?? null;
+$remitenteRaw = $_SESSION['usuario']['_id'] ?? null;
 
 // Normalizar ID
-$remitente = is_array($rawId) ? $rawId['$oid'] : $rawId;
+$remitente = is_array($remitenteRaw) ? $remitenteRaw['$oid'] : $remitenteRaw;
 
+// Validación
 if (!$mensaje || !$receptor || !$remitente) {
-    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-    <script>
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Debe escribir un mensaje.' })
-            .then(() => history.back());
-    </script>";
+    $_SESSION['alerta'] = [
+        "tipo" => "error",
+        "titulo" => "Error",
+        "texto" => "Debe seleccionar un usuario y escribir un mensaje."
+    ];
+    header("Location: ../mensajes.php");
     exit();
 }
 
+// Guardar mensaje
 $bd->mensajes->insertOne([
-    "remitente_id" => new ObjectId($remitente),
-    "receptor_id" => new ObjectId($receptor),
+    "remitente_id" => new ObjectId((string)$remitente),
+    "receptor_id" => new ObjectId((string)$receptor),
     "mensaje" => $mensaje,
     "fecha" => new UTCDateTime(time() * 1000)
 ]);
 
-echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Mensaje enviado',
-        timer: 1500,
-        showConfirmButton: false
-    }).then(() => location.reload());
-</script>";
+// Mensaje de éxito
+$_SESSION['alerta'] = [
+    "tipo" => "success",
+    "titulo" => "Mensaje enviado",
+    "texto" => "El mensaje fue enviado correctamente."
+];
+
+header("Location: ../mensajes.php");
 exit();
 ?>
