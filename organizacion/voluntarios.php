@@ -9,6 +9,48 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
     exit();
 }
 
+// Función para formatear fechas ISO a formato legible
+function formatearFecha($fechaISO) {
+    if (empty($fechaISO)) return 'Fecha no especificada';
+    
+    try {
+        // Si es formato ISO (2025-11-28T09:16)
+        if (strpos($fechaISO, 'T') !== false) {
+            $fecha = DateTime::createFromFormat('Y-m-d\TH:i', $fechaISO);
+            if ($fecha) {
+                return $fecha->format('d/m/Y \a \l\a\s H:i');
+            }
+        }
+        
+        // Si es otro formato, intentar parsearlo
+        $fecha = new DateTime($fechaISO);
+        return $fecha->format('d/m/Y \a \l\a\s H:i');
+        
+    } catch (Exception $e) {
+        return $fechaISO; // Devolver original si hay error
+    }
+}
+
+// Función para formatear fecha solo (sin hora)
+function formatearSoloFecha($fechaISO) {
+    if (empty($fechaISO)) return 'Fecha no especificada';
+    
+    try {
+        if (strpos($fechaISO, 'T') !== false) {
+            $fecha = DateTime::createFromFormat('Y-m-d\TH:i', $fechaISO);
+            if ($fecha) {
+                return $fecha->format('d/m/Y');
+            }
+        }
+        
+        $fecha = new DateTime($fechaISO);
+        return $fecha->format('d/m/Y');
+        
+    } catch (Exception $e) {
+        return $fechaISO;
+    }
+}
+
 // Procesar asistencia
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['marcar_asistencia'])) {
     $inscripcionId = $_POST['inscripcion_id'];
