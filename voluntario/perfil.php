@@ -320,8 +320,8 @@ $certificados = new ArrayIterator($misCertificados);
                                     <?php endif; ?>
                                 </div>
                                 <div class="certificado-acciones">
-                                    <a href="/Proyecto/ver_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
-                                    <a href="/Proyecto/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar"> 📥 Descargar PDF</a>
+                                    <a href="/../Proyecto/voluntario/funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
+                                    <a href="/../Proyecto/voluntario/funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar"> 📥 Descargar PDF</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
