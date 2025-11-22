@@ -11,9 +11,8 @@ if ($_SESSION['usuario']['rol'] !== "voluntario") {
 $mensajes = $bd->foro->find();
 $organizaciones = $bd->organizaciones->find();
 
-// DEBUG: Verificar organizaciones
-echo "<!-- DEBUG: Número de organizaciones: " . iterator_count($organizaciones) . " -->";
-$organizaciones->rewind(); // Reiniciar el cursor para poder usarlo después
+// Convertir a array para poder reutilizar
+$organizacionesArray = iterator_to_array($organizaciones);
 ?>
 
 <div class="main-content">
@@ -23,9 +22,7 @@ $organizaciones->rewind(); // Reiniciar el cursor para poder usarlo después
         <label>Enviar mensaje a:</label>
         <select name="id_organizacion" required>
             <option value="" disabled selected>Selecciona una organización</option>
-            <?php
-            $organizaciones = $bd->organizaciones->find();
-            foreach ($organizaciones as $org):
+            <?php foreach ($organizacionesArray as $org): 
                 // Asegurar el formato correcto del ObjectId
                 $orgId = $org['_id'];
                 if ($orgId instanceof MongoDB\BSON\ObjectId) {
@@ -57,18 +54,38 @@ $organizaciones->rewind(); // Reiniciar el cursor para poder usarlo después
         </tr>
 
         <?php foreach ($mensajes as $m):
-            $org = $bd->organizaciones->findOne([
-                "_id" => new MongoDB\BSON\ObjectId($m['id_organizacion'])
-            ]);
+            // Obtener el nombre de la organización para cada mensaje
+            try {
+                $orgId = $m['id_organizacion'];
+                if ($orgId instanceof MongoDB\BSON\ObjectId) {
+                    $orgId = $orgId->__toString();
+                }
+                
+                $org = $bd->organizaciones->findOne([
+                    "_id" => new MongoDB\BSON\ObjectId($orgId)
+                ]);
+                $nombreOrg = $org['nombre_org'] ?? "N/A";
+            } catch (Exception $e) {
+                $nombreOrg = "N/A";
+            }
         ?>
             <tr>
-                <td><?= $m['fecha'] ?></td>
-                <td><?= $org['nombre_org'] ?? "N/A" ?></td>
-                <td><?= $m['titulo'] ?></td>
-                <td><?= $m['mensaje'] ?></td>
-                <td><?= $m['autor'] == "organizacion" ? "👩‍💼 Organización" : "🙋‍♂️ Voluntario" ?></td>
+                <td><?= htmlspecialchars($m['fecha'] ?? '') ?></td>
+                <td><?= htmlspecialchars($nombreOrg) ?></td>
+                <td><?= htmlspecialchars($m['titulo'] ?? '') ?></td>
+                <td><?= htmlspecialchars($m['mensaje'] ?? '') ?></td>
+                <td>
+                    <?php 
+                    if (($m['autor'] ?? '') == "organizacion") {
+                        echo "👩‍💼 Organización";
+                    } else {
+                        echo "🙋‍♂️ Voluntario";
+                    }
+                    ?>
+                </td>
             </tr>
         <?php endforeach; ?>
     </table>
 </div>
+
 <?php include 'includes/layout_footer.php'; ?>
