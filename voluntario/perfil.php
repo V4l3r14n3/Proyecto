@@ -269,6 +269,47 @@ $certificados = new ArrayIterator($misCertificados);
             margin-top: 1.5rem;
             color: #7f8c8d;
         }
+
+        /* === BOTONES DE CERTIFICADOS === */
+.certificado-acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-ver, .btn-descargar {
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-ver {
+    background: #00724f;
+    color: white;
+}
+
+.btn-descargar {
+    background: #00bfa6;
+    color: white;
+}
+
+.btn-ver:hover, .btn-descargar:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Modo oscuro */
+body.dark-mode .btn-ver {
+    background: #00bfa6;
+}
+
+body.dark-mode .btn-descargar {
+    background: #00724f;
+}
     </style>
 </head>
 
