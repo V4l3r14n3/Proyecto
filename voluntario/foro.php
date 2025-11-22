@@ -47,7 +47,7 @@ $organizaciones = $bd->organizaciones->find();
         ?>
         <tr>
             <td><?= $m['fecha'] ?></td>
-            <td><?= $org['nombre'] ?? "N/A" ?></td>
+            <td><?= $org['nombre_org'] ?? "N/A" ?></td>
             <td><?= $m['titulo'] ?></td>
             <td><?= $m['mensaje'] ?></td>
             <td><?= $m['autor']=="organizacion" ? "👩‍💼 Organización" : "🙋‍♂️ Voluntario" ?></td>
