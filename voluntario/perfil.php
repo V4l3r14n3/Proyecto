@@ -1,6 +1,7 @@
-<?php 
-include 'includes/layout.php'; 
+<?php
+include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
+
 use MongoDB\BSON\ObjectId;
 
 // Verifica sesión
@@ -17,7 +18,7 @@ foreach ($todosLosCertificados as $cert) {
     // Comparación flexible de IDs
     $idCertificado = (string)$cert['voluntario_id'];
     $idSesion = (string)$_SESSION['usuario']['_id']['$oid'];
-    
+
     if ($idCertificado === $idSesion) {
         $misCertificados[] = $cert;
     }
@@ -29,244 +30,14 @@ $certificados = new ArrayIterator($misCertificados);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil - Voluntario</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <style>
-        .perfil-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .form-section, .certificados-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .certificados-grid {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .certificado-card {
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            padding: 1rem;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .certificado-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .certificado-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #dee2e6;
-            padding-bottom: 0.5rem;
-        }
-
-        .certificado-header h4 {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
-        .certificado-codigo {
-            background: #34495e;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.7rem;
-            font-family: monospace;
-        }
-
-        .certificado-body p {
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .certificado-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-ver, .btn-descargar {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-ver {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-ver:hover {
-            background: #2980b9;
-        }
-
-        .btn-descargar {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btn-descargar:hover {
-            background: #219a52;
-        }
-
-        .no-certificados {
-            text-align: center;
-            padding: 2rem;
-            color: #7f8c8d;
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 2px dashed #dee2e6;
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .certificado-modal {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .perfil-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .perfil-form label {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-
-        .perfil-form input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .perfil-form input:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
-        }
-
-        .perfil-form button {
-            background: #3498db;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.2s ease;
-        }
-
-        .perfil-form button:hover {
-            background: #2980b9;
-        }
-
-        @media (max-width: 768px) {
-            .perfil-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .certificado-actions {
-                flex-direction: column;
-            }
-            
-            .certificado-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-        }
-
-        /* Estilos para el certificado en el modal */
-        .certificado-completo {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-        }
-
-        .certificado-titulo {
-            text-align: center;
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .certificado-contenido {
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        .certificado-nombre {
-            color: #e74c3c;
-            font-size: 1.5rem;
-            margin: 1rem 0;
-            font-weight: bold;
-        }
-
-        .certificado-footer {
-            text-align: center;
-            border-top: 2px solid #3498db;
-            padding-top: 1rem;
-            margin-top: 1.5rem;
-            color: #7f8c8d;
-        }
-    </style>
 </head>
+
 <body>
 
     <div class="main-content">
@@ -291,10 +62,10 @@ $certificados = new ArrayIterator($misCertificados);
 
             <div class="certificados-section">
                 <h3>📜 Mis Certificados de Voluntariado</h3>
-                
+
                 <?php if (count($misCertificados) > 0): ?>
                     <div class="certificados-grid">
-                        <?php foreach ($misCertificados as $cert): 
+                        <?php foreach ($misCertificados as $cert):
                             // Obtener información adicional de la actividad
                             $actividad = $bd->actividades->findOne([
                                 '_id' => new ObjectId($cert['actividad_id'])
@@ -315,9 +86,21 @@ $certificados = new ArrayIterator($misCertificados);
                                     <?php endif; ?>
                                 </div>
                                 <div class="certificado-actions">
-                                    <button onclick="verCertificado('<?= $cert['_id'] ?>')" class="btn-ver">👁️ Ver Certificado</button>
-                                    <button onclick="descargarCertificado('<?= $cert['_id'] ?>')" class="btn-descargar">📥 Descargar PDF</button>
+                                    <a href="#" class="btn-ver" onclick="mostrarMensajeCertificado()">Ver Certificado</a>
+                                    <a href="#" class="btn-descargar" onclick="mostrarMensajeDescarga()">Descargar PDF</a>
                                 </div>
+
+                                <script>
+                                    function mostrarMensajeCertificado() {
+                                        alert('📄 Los certificados estarán disponibles próximamente. Estamos trabajando en esta funcionalidad.');
+                                        return false;
+                                    }
+
+                                    function mostrarMensajeDescarga() {
+                                        alert('⏳ La descarga de PDF estará habilitada en los próximos días. Gracias por tu paciencia.');
+                                        return false;
+                                    }
+                                </script>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -389,7 +172,7 @@ $certificados = new ArrayIterator($misCertificados);
                     Swal.showLoading();
                 }
             });
-            
+
             // Redirigir a la función de descarga
             setTimeout(() => {
                 window.location.href = `funciones/descargar_certificado.php?id=${certificadoId}`;
@@ -417,21 +200,22 @@ $certificados = new ArrayIterator($misCertificados);
     </script>
 
     <?php if (isset($_GET['status']) && $_GET['status'] === 'ok'): ?>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Perfil actualizado',
-            text: 'Tus cambios han sido guardados correctamente 💾',
-            confirmButtonColor: '#00724f',
-            timer: 3000,
-            timerProgressBar: true
-        }).then(() => {
-            // Limpiar URL sin recargar la página
-            history.replaceState(null, "", location.pathname);
-        });
-    });
-    </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Perfil actualizado',
+                    text: 'Tus cambios han sido guardados correctamente 💾',
+                    confirmButtonColor: '#00724f',
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                    // Limpiar URL sin recargar la página
+                    history.replaceState(null, "", location.pathname);
+                });
+            });
+        </script>
     <?php endif; ?>
 </body>
+
 </html>
