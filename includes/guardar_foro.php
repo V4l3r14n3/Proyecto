@@ -18,17 +18,41 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $titulo = trim($_POST['titulo']);
     $mensaje = trim($_POST['mensaje']);
 
+    // Agrega esta validación después de trim()
+    $titulo = trim($_POST['titulo']);
+    $mensaje = trim($_POST['mensaje']);
+
+    // Validar longitud
+    if (strlen($titulo) > 100) {
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error',
+            'message' => 'El título no puede tener más de 100 caracteres'
+        ];
+        header("Location: " . ($_SESSION['usuario']['rol'] === "organizacion" ? "../organizacion/foro.php" : "../voluntario/foro.php"));
+        exit;
+    }
+
+    if (strlen($mensaje) > 1000) {
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error',
+            'message' => 'El mensaje no puede tener más de 1000 caracteres'
+        ];
+        header("Location: " . ($_SESSION['usuario']['rol'] === "organizacion" ? "../organizacion/foro.php" : "../voluntario/foro.php"));
+        exit;
+    }
+
     // Detectar quién está escribiendo
     if (isset($_SESSION['usuario']['rol']) && $_SESSION['usuario']['rol'] === "organizacion") {
-        
+
         $autor = "organizacion";
         // ID guardado en sesión para organización
         $id_organizacion = $_SESSION['usuario']['_id']['$oid'];
         $id_voluntario = null;
-
     } else {
         $autor = "voluntario";
-        
+
         // Validar que se haya seleccionado una organización
         if (empty($_POST['id_organizacion'])) {
             $_SESSION['alert'] = [
@@ -39,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             header("Location: ../voluntario/foro.php");
             exit;
         }
-        
+
         // USAR el id_organizacion del select
         $id_organizacion = $_POST['id_organizacion'];
         $id_voluntario = $_SESSION['usuario']['_id']['$oid'];
@@ -73,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     try {
         // Guardar en base de datos
         $result = $bd->foro->insertOne($foro);
-        
+
         if ($result->getInsertedCount() === 1) {
             $_SESSION['alert'] = [
                 'type' => 'success',
@@ -87,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                 'message' => 'Error al publicar el mensaje'
             ];
         }
-        
     } catch (Exception $e) {
         $_SESSION['alert'] = [
             'type' => 'error',
@@ -109,4 +132,3 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     header("Location: ../index.php");
     exit;
 }
-?>
