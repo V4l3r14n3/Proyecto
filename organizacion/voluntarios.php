@@ -9,6 +9,9 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
     exit();
 }
 
+// DEBUG: Mostrar información de la organización
+error_log("Organización logueada: " . $_SESSION['usuario']['nombre_org']);
+
 // Procesar asistencia
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['marcar_asistencia'])) {
     $inscripcionId = $_POST['inscripcion_id'];
@@ -54,6 +57,8 @@ function generarCertificado($inscripcionId, $bd) {
     $voluntario = $bd->usuarios->findOne(['_id' => new ObjectId($inscripcion['voluntario_id'])]);
     $actividad = $bd->actividades->findOne(['_id' => new ObjectId($inscripcion['actividad_id'])]);
     
+    if (!$voluntario || !$actividad) return;
+    
     $certificado = [
         'voluntario_id' => $inscripcion['voluntario_id'],
         'actividad_id' => $inscripcion['actividad_id'],
@@ -61,7 +66,7 @@ function generarCertificado($inscripcionId, $bd) {
         'titulo_actividad' => $actividad['titulo'],
         'nombre_voluntario' => $voluntario['nombre'],
         'nombre_organizacion' => $_SESSION['usuario']['nombre_org'],
-        'fecha_actividad' => $actividad['fecha'],
+        'fecha_actividad' => $actividad['fecha_hora'],
         'fecha_emision' => date('Y-m-d H:i:s'),
         'codigo_certificado' => uniqid('CERT_'),
         'horas_voluntariado' => $actividad['duracion_horas'] ?? 4
@@ -74,6 +79,13 @@ function generarCertificado($inscripcionId, $bd) {
 $actividades = $bd->actividades->find([
     'organizacion' => $_SESSION['usuario']['nombre_org']
 ]);
+
+// DEBUG: Contar actividades
+$actividadesArray = iterator_to_array($actividades);
+error_log("Número de actividades encontradas: " . count($actividadesArray));
+foreach ($actividadesArray as $act) {
+    error_log("Actividad: " . $act['titulo'] . " - ID: " . $act['_id']->__toString());
+}
 
 ?>
 
@@ -89,6 +101,23 @@ $actividades = $bd->actividades->find([
     <div class="main-content">
         <h2>Voluntarios inscritos 👥</h2>
 
+        <!-- DEBUG: Información de actividades -->
+        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
+            <h4>DEBUG - Actividades de <?= htmlspecialchars($_SESSION['usuario']['nombre_org']) ?>:</h4>
+            <?php if (count($actividadesArray) > 0): ?>
+                <ul>
+                <?php foreach ($actividadesArray as $act): ?>
+                    <li>
+                        <?= htmlspecialchars($act['titulo']) ?> 
+                        (ID: <?= $act['_id']->__toString() ?>)
+                    </li>
+                <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No se encontraron actividades para esta organización</p>
+            <?php endif; ?>
+        </div>
+
         <?php if (isset($_SESSION['alert'])): ?>
             <script>
                 Swal.fire({
@@ -100,19 +129,27 @@ $actividades = $bd->actividades->find([
             </script>
         <?php endif; ?>
 
-        <?php foreach ($actividades as $actividad): ?>
+        <?php foreach ($actividadesArray as $actividad): ?>
         <div class="evento-grupo">
             <h3 class="titulo-evento">🎯 <?= htmlspecialchars($actividad['titulo']) ?> 
-                <small>(<?= htmlspecialchars($actividad['fecha_hora']) ?>)</small>
+                <small>(<?= htmlspecialchars($actividad['fecha_hora'] ?? 'Fecha no especificada') ?>)</small>
             </h3>
             
             <?php
-            // Obtener inscripciones para esta actividad
+            // Obtener inscripciones para esta actividad - CORREGIDO
             $inscripcionesEvento = $bd->inscripciones->find([
                 'actividad_id' => $actividad['_id']->__toString()
             ]);
+            
+            $inscripcionesArray = iterator_to_array($inscripcionesEvento);
             ?>
+            
+            <!-- DEBUG: Inscripciones para esta actividad -->
+            <div style="background: #e8f4fd; padding: 8px; margin: 10px 0; border-radius: 3px;">
+                <small>DEBUG: <?= count($inscripcionesArray) ?> inscripciones encontradas para esta actividad</small>
+            </div>
 
+            <?php if (count($inscripcionesArray) > 0): ?>
             <table class="tabla">
                 <tr>
                     <th>Nombre</th>
@@ -122,12 +159,20 @@ $actividades = $bd->actividades->find([
                     <th>Certificado</th>
                 </tr>
 
-                <?php foreach ($inscripcionesEvento as $i): 
+                <?php foreach ($inscripcionesArray as $i): 
+                    // DEBUG: Mostrar datos de la inscripción
+                    error_log("Procesando inscripción: " . $i['_id']->__toString());
+                    error_log("Voluntario ID: " . $i['voluntario_id']);
+                    error_log("Actividad ID: " . $i['actividad_id']);
+                    
                     $voluntario = $bd->usuarios->findOne([
                         "_id" => new ObjectId($i['voluntario_id'])
                     ]);
                     
-                    if (!$voluntario) continue;
+                    if (!$voluntario) {
+                        error_log("Voluntario no encontrado para ID: " . $i['voluntario_id']);
+                        continue;
+                    }
                     
                     $certificado = $bd->certificados->findOne([
                         'voluntario_id' => $i['voluntario_id'],
@@ -135,16 +180,16 @@ $actividades = $bd->actividades->find([
                     ]);
                 ?>
                 <tr>
-                    <td><?= htmlspecialchars($voluntario['nombre']) ?></td>
-                    <td><?= htmlspecialchars($voluntario['email']) ?></td>
-                    <td><?= htmlspecialchars($i['fecha_registro']) ?></td>
+                    <td><?= htmlspecialchars($voluntario['nombre'] ?? 'Desconocido') ?></td>
+                    <td><?= htmlspecialchars($voluntario['email'] ?? 'No disponible') ?></td>
+                    <td><?= htmlspecialchars($i['fecha_registro'] ?? 'Fecha no disponible') ?></td>
                     <td>
                         <form method="POST" class="form-asistencia">
-                            <input type="hidden" name="inscripcion_id" value="<?= $i['_id'] ?>">
+                            <input type="hidden" name="inscripcion_id" value="<?= $i['_id']->__toString() ?>">
                             <select name="asistio" onchange="this.form.submit()">
                                 <option value="">Seleccionar</option>
-                                <option value="si" <?= isset($i['asistio']) && $i['asistio'] ? 'selected' : '' ?>>✅ Asistió</option>
-                                <option value="no" <?= isset($i['asistio']) && !$i['asistio'] ? 'selected' : '' ?>>❌ No asistió</option>
+                                <option value="si" <?= (isset($i['asistio']) && $i['asistio'] === true) ? 'selected' : '' ?>>✅ Asistió</option>
+                                <option value="no" <?= (isset($i['asistio']) && $i['asistio'] === false) ? 'selected' : '' ?>>❌ No asistió</option>
                             </select>
                             <input type="hidden" name="marcar_asistencia" value="1">
                         </form>
@@ -153,7 +198,7 @@ $actividades = $bd->actividades->find([
                         <?php if ($certificado): ?>
                             <span class="badge success">✅ Emitido</span>
                             <br>
-                            <small><?= $certificado['codigo_certificado'] ?></small>
+                            <small><?= $certificado['codigo_certificado'] ?? 'Sin código' ?></small>
                         <?php else: ?>
                             <span class="badge secondary">⏳ Pendiente</span>
                         <?php endif; ?>
@@ -161,8 +206,21 @@ $actividades = $bd->actividades->find([
                 </tr>
                 <?php endforeach; ?>
             </table>
+            <?php else: ?>
+            <p style="text-align: center; color: #7f8c8d; padding: 1rem;">
+                No hay voluntarios inscritos en esta actividad.
+            </p>
+            <?php endif; ?>
         </div>
         <?php endforeach; ?>
+
+        <?php if (count($actividadesArray) === 0): ?>
+        <div class="no-actividades">
+            <p style="text-align: center; color: #e74c3c; padding: 2rem;">
+                No tienes actividades creadas. Crea actividades para que los voluntarios se inscriban.
+            </p>
+        </div>
+        <?php endif; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
@@ -205,6 +263,14 @@ $actividades = $bd->actividades->find([
         .badge.secondary {
             background: #95a5a6;
             color: white;
+        }
+        
+        .no-actividades {
+            text-align: center;
+            padding: 2rem;
+            background: #f8d7da;
+            border-radius: 10px;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </body>
