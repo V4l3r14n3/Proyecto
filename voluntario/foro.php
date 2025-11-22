@@ -1,5 +1,4 @@
 <?php
-session_start();
 include $_SERVER['DOCUMENT_ROOT']."/Proyecto/includes/conexion.php";
 include "includes/layout.php";
 
