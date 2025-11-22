@@ -9,20 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     // Detectar quién está escribiendo
     if (isset($_SESSION['usuario']['rol']) && $_SESSION['usuario']['rol'] === "organizacion") {
-        
+
         $autor = "organizacion";
         // ID guardado en sesión para organización
         $id_organizacion = $_SESSION['usuario']['_id']['$oid'];
         $id_voluntario = null;
-
     } else {
-
         $autor = "voluntario";
 
-        // El voluntario pertenece a una organización → debe venir desde sesión, NO POST
-        $id_organizacion = $_SESSION['usuario']['id_organizacion'] ?? null;
+        // Buscar organización asignada desde la BD
+        $voluntarioBD = $bd->voluntarios->findOne([
+            "_id" => new MongoDB\BSON\ObjectId($_SESSION['usuario']['_id']['$oid'])
+        ]);
 
-        // ID del voluntario
+        $id_organizacion = $voluntarioBD['id_organizacion'] ?? null;
+
         $id_voluntario = $_SESSION['usuario']['_id']['$oid'];
     }
 
