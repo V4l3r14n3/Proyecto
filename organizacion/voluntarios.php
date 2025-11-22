@@ -67,10 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['marcar_asistencia']))
         );
 
         // Si asistió, generar certificado
+        // Si asistió, generar certificado
         if ($asistio) {
-            generarCertificado($inscripcionId, $bd);
+            $certificadoGenerado = generarCertificado($inscripcionId, $bd);
+            if (!$certificadoGenerado) {
+                error_log("❌ FALLÓ la generación del certificado para inscripción: " . $inscripcionId);
+            }
         }
-
         $_SESSION['alert'] = [
             'type' => 'success',
             'title' => 'Éxito',
@@ -89,31 +92,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['marcar_asistencia']))
 }
 
 // Función para generar certificado
-function generarCertificado($inscripcionId, $bd)
-{
-    $inscripcion = $bd->inscripciones->findOne(['_id' => new ObjectId($inscripcionId)]);
-
-    if (!$inscripcion) return;
-
-    $voluntario = $bd->usuarios->findOne(['_id' => new ObjectId($inscripcion['voluntario_id'])]);
-    $actividad = $bd->actividades->findOne(['_id' => new ObjectId($inscripcion['actividad_id'])]);
-
-    if (!$voluntario || !$actividad) return;
-
-    $certificado = [
-        'voluntario_id' => $inscripcion['voluntario_id'],
-        'actividad_id' => $inscripcion['actividad_id'],
-        'organizacion_id' => $_SESSION['usuario']['_id']['$oid'],
-        'titulo_actividad' => $actividad['titulo'],
-        'nombre_voluntario' => $voluntario['nombre'],
-        'nombre_organizacion' => $_SESSION['usuario']['nombre_org'],
-        'fecha_actividad' => $actividad['fecha_hora'],
-        'fecha_emision' => date('Y-m-d H:i:s'),
-        'codigo_certificado' => uniqid('CERT_'),
-        'horas_voluntariado' => $actividad['duracion_horas'] ?? 4
-    ];
-
-    $bd->certificados->insertOne($certificado);
+function generarCertificado($inscripcionId, $bd) {
+    try {
+        $inscripcion = $bd->inscripciones->findOne(['_id' => new ObjectId($inscripcionId)]);
+        
+        if (!$inscripcion) {
+            error_log("GenerarCertificado: Inscripción no encontrada");
+            return false;
+        }
+        
+        $voluntario = $bd->usuarios->findOne(['_id' => new ObjectId($inscripcion['voluntario_id'])]);
+        $actividad = $bd->actividades->findOne(['_id' => new ObjectId($inscripcion['actividad_id'])]);
+        
+        if (!$voluntario || !$actividad) {
+            error_log("GenerarCertificado: Voluntario o actividad no encontrados");
+            return false;
+        }
+        
+        // Verificar si ya existe certificado
+        $certificadoExistente = $bd->certificados->findOne([
+            'voluntario_id' => $inscripcion['voluntario_id'],
+            'actividad_id' => $inscripcion['actividad_id']
+        ]);
+        
+        if ($certificadoExistente) {
+            return true; // Ya existe, no hacer nada
+        }
+        
+        // Crear nuevo certificado
+        $certificado = [
+            'voluntario_id' => $inscripcion['voluntario_id'],
+            'actividad_id' => $inscripcion['actividad_id'],
+            'organizacion_id' => $_SESSION['usuario']['_id']['$oid'],
+            'titulo_actividad' => $actividad['titulo'],
+            'nombre_voluntario' => $voluntario['nombre'],
+            'nombre_organizacion' => $_SESSION['usuario']['nombre_org'],
+            'fecha_actividad' => formatearFecha($actividad['fecha_hora']),
+            'fecha_emision' => date('Y-m-d H:i:s'),
+            'codigo_certificado' => uniqid('CERT_'),
+            'horas_voluntariado' => $actividad['duracion_horas'] ?? 4
+        ];
+        
+        $result = $bd->certificados->insertOne($certificado);
+        return $result->getInsertedCount() === 1;
+        
+    } catch (Exception $e) {
+        error_log("GenerarCertificado Error: " . $e->getMessage());
+        return false;
+    }
 }
 
 // Obtener TODAS las inscripciones y filtrar por organización
