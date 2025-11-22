@@ -23,7 +23,9 @@ function normalizarId($id) {
 // Obtener ID normalizado
 $voluntarioId = normalizarId($_SESSION['usuario']['_id']);
 
-// Obtener certificados del voluntario con ID normalizado
+// Buscar certificados de forma más flexible
+$voluntarioId = $_SESSION['usuario']['_id']['$oid'] ?? (string)$_SESSION['usuario']['_id'];
+
 $certificados = $bd->certificados->find([
     'voluntario_id' => $voluntarioId
 ]);
