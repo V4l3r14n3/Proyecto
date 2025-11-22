@@ -336,7 +336,7 @@ foreach ($inscripciones as $inscripcion) {
                     <div class="info-box">
                         <strong>📋 Información de la actividad:</strong><br>
                         <strong>Fecha:</strong> <?= formatearFecha($actividad['fecha_hora'] ?? '') ?> |
-                        <strong>Lugar:</strong> <?= htmlspecialchars($actividad['lugar'] ?? 'No especificado') ?> |
+                        <strong>Lugar:</strong> <?= htmlspecialchars($actividad['ciudad'] ?? 'No especificado') ?> |
                         <strong>Descripción:</strong> <?= htmlspecialchars(substr($actividad['descripcion'] ?? 'Sin descripción', 0, 100)) ?>...
                     </div>
                     <div class="info-box">
