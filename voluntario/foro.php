@@ -1,5 +1,5 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT']."/Proyecto/includes/conexion.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 include "includes/layout.php";
 
 if ($_SESSION['usuario']['rol'] !== "voluntario") {
@@ -19,8 +19,8 @@ $organizaciones = $bd->organizaciones->find();
         <label>Enviar mensaje a:</label>
         <select name="id_organizacion" required>
             <option disabled selected>Selecciona una organización</option>
-            <?php foreach($organizaciones as $org): ?>
-                <option value="<?=$org['_id']?>"><?=$org['nombre_org']?></option>
+            <?php foreach ($organizaciones as $org): ?>
+                <option value="<?= $org['_id']['$oid'] ?>"><?= $org['nombre_org'] ?></option>
             <?php endforeach; ?>
         </select>
 
@@ -42,16 +42,18 @@ $organizaciones = $bd->organizaciones->find();
             <th>Autor</th>
         </tr>
 
-        <?php foreach ($mensajes as $m): 
-            $org = $bd->organizaciones->findOne(["_id"=>$m['id_organizacion']]);
+        <?php foreach ($mensajes as $m):
+            $org = $bd->organizaciones->findOne([
+                "_id" => new MongoDB\BSON\ObjectId($m['id_organizacion'])
+            ]);
         ?>
-        <tr>
-            <td><?= $m['fecha'] ?></td>
-            <td><?= $org['nombre_org'] ?? "N/A" ?></td>
-            <td><?= $m['titulo'] ?></td>
-            <td><?= $m['mensaje'] ?></td>
-            <td><?= $m['autor']=="organizacion" ? "👩‍💼 Organización" : "🙋‍♂️ Voluntario" ?></td>
-        </tr>
+            <tr>
+                <td><?= $m['fecha'] ?></td>
+                <td><?= $org['nombre_org'] ?? "N/A" ?></td>
+                <td><?= $m['titulo'] ?></td>
+                <td><?= $m['mensaje'] ?></td>
+                <td><?= $m['autor'] == "organizacion" ? "👩‍💼 Organización" : "🙋‍♂️ Voluntario" ?></td>
+            </tr>
         <?php endforeach; ?>
     </table>
 </div>
