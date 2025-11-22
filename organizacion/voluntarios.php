@@ -103,7 +103,7 @@ $actividades = $bd->actividades->find([
         <?php foreach ($actividades as $actividad): ?>
         <div class="evento-grupo">
             <h3 class="titulo-evento">🎯 <?= htmlspecialchars($actividad['titulo']) ?> 
-                <small>(<?= htmlspecialchars($actividad['fecha']) ?>)</small>
+                <small>(<?= htmlspecialchars($actividad['fecha_hora']) ?>)</small>
             </h3>
             
             <?php
