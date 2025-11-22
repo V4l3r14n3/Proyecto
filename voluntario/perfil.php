@@ -1,6 +1,7 @@
-<?php 
-include 'includes/layout.php'; 
+<?php
+include 'includes/layout.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
+
 use MongoDB\BSON\ObjectId;
 
 // Verifica sesión
@@ -17,7 +18,7 @@ foreach ($todosLosCertificados as $cert) {
     // Comparación flexible de IDs
     $idCertificado = (string)$cert['voluntario_id'];
     $idSesion = (string)$_SESSION['usuario']['_id']['$oid'];
-    
+
     if ($idCertificado === $idSesion) {
         $misCertificados[] = $cert;
     }
@@ -29,6 +30,7 @@ $certificados = new ArrayIterator($misCertificados);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,11 +43,12 @@ $certificados = new ArrayIterator($misCertificados);
             gap: 2rem;
         }
 
-        .form-section, .certificados-section {
+        .form-section,
+        .certificados-section {
             background: white;
             padding: 1.5rem;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .certificados-grid {
@@ -63,7 +66,7 @@ $certificados = new ArrayIterator($misCertificados);
 
         .certificado-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .certificado-header {
@@ -103,7 +106,8 @@ $certificados = new ArrayIterator($misCertificados);
             flex-wrap: wrap;
         }
 
-        .btn-ver, .btn-descargar {
+        .btn-ver,
+        .btn-descargar {
             padding: 8px 12px;
             border: none;
             border-radius: 5px;
@@ -148,7 +152,7 @@ $certificados = new ArrayIterator($misCertificados);
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
         .certificado-modal {
@@ -160,7 +164,7 @@ $certificados = new ArrayIterator($misCertificados);
             max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .close {
@@ -220,11 +224,11 @@ $certificados = new ArrayIterator($misCertificados);
             .perfil-container {
                 grid-template-columns: 1fr;
             }
-            
+
             .certificado-actions {
                 flex-direction: column;
             }
-            
+
             .certificado-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -267,6 +271,7 @@ $certificados = new ArrayIterator($misCertificados);
         }
     </style>
 </head>
+
 <body>
 
     <div class="main-content">
@@ -291,10 +296,10 @@ $certificados = new ArrayIterator($misCertificados);
 
             <div class="certificados-section">
                 <h3>📜 Mis Certificados de Voluntariado</h3>
-                
+
                 <?php if (count($misCertificados) > 0): ?>
                     <div class="certificados-grid">
-                        <?php foreach ($misCertificados as $cert): 
+                        <?php foreach ($misCertificados as $cert):
                             // Obtener información adicional de la actividad
                             $actividad = $bd->actividades->findOne([
                                 '_id' => new ObjectId($cert['actividad_id'])
@@ -314,9 +319,9 @@ $certificados = new ArrayIterator($misCertificados);
                                         <p><strong>📍 Lugar:</strong> <?= htmlspecialchars($actividad['lugar']) ?></p>
                                     <?php endif; ?>
                                 </div>
-                                <div class="certificado-actions">
-                                    <button onclick="verCertificado('<?= $cert['_id'] ?>')" class="btn-ver">👁️ Ver Certificado</button>
-                                    <button onclick="descargarCertificado('<?= $cert['_id'] ?>')" class="btn-descargar">📥 Descargar PDF</button>
+                                <div class="certificado-acciones">
+                                    <a href="/Proyecto/ver_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
+                                    <a href="/Proyecto/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar"> 📥 Descargar PDF</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -389,7 +394,7 @@ $certificados = new ArrayIterator($misCertificados);
                     Swal.showLoading();
                 }
             });
-            
+
             // Redirigir a la función de descarga
             setTimeout(() => {
                 window.location.href = `funciones/descargar_certificado.php?id=${certificadoId}`;
@@ -417,21 +422,22 @@ $certificados = new ArrayIterator($misCertificados);
     </script>
 
     <?php if (isset($_GET['status']) && $_GET['status'] === 'ok'): ?>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Perfil actualizado',
-            text: 'Tus cambios han sido guardados correctamente 💾',
-            confirmButtonColor: '#00724f',
-            timer: 3000,
-            timerProgressBar: true
-        }).then(() => {
-            // Limpiar URL sin recargar la página
-            history.replaceState(null, "", location.pathname);
-        });
-    });
-    </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Perfil actualizado',
+                    text: 'Tus cambios han sido guardados correctamente 💾',
+                    confirmButtonColor: '#00724f',
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                    // Limpiar URL sin recargar la página
+                    history.replaceState(null, "", location.pathname);
+                });
+            });
+        </script>
     <?php endif; ?>
 </body>
+
 </html>
