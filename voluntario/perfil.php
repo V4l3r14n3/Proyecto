@@ -1,7 +1,6 @@
-<?php
-include 'includes/layout.php';
+<?php 
+include 'includes/layout.php'; 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
-
 use MongoDB\BSON\ObjectId;
 
 // Verifica sesión
@@ -10,11 +9,29 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
     exit();
 }
 
-// Obtener certificados del voluntario
+// DEBUG: Mostrar información completa de la sesión
+error_log("Sesión voluntario: " . print_r($_SESSION['usuario'], true));
+
+// Función para normalizar IDs (por si hay diferencias de formato)
+function normalizarId($id) {
+    if (is_array($id) && isset($id['$oid'])) {
+        return $id['$oid'];
+    }
+    return $id;
+}
+
+// Obtener ID normalizado
+$voluntarioId = normalizarId($_SESSION['usuario']['_id']);
+
+// Obtener certificados del voluntario con ID normalizado
 $certificados = $bd->certificados->find([
-    'voluntario_id' => $_SESSION['usuario']['_id']['$oid']
+    'voluntario_id' => $voluntarioId
 ]);
 
+// DEBUG: También buscar con el ID específico que sabemos que funciona
+$certificadosDebug = $bd->certificados->find([
+    'voluntario_id' => '6914c19efb1a0dfe1301b9bb'
+]);
 ?>
 
 <div class="main-content">
@@ -39,28 +56,50 @@ $certificados = $bd->certificados->find([
 
         <div class="certificados-section">
             <h3>📜 Mis Certificados de Voluntariado</h3>
-
-            <!-- DEBUG: Información -->
-            <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
-                <h4>DEBUG - Información del voluntario:</h4>
-                <p><strong>ID del voluntario:</strong> <?= $_SESSION['usuario']['_id']['$oid'] ?></p>
-                <p><strong>Certificados encontrados:</strong> <?= iterator_count($certificados) ?></p>
-
-                <?php
-                // Verificar si hay certificados para esta actividad específica
-                $certificadoEspecifico = $bd->certificados->findOne([
-                    'voluntario_id' => $_SESSION['usuario']['_id']['$oid'],
-                    'actividad_id' => '691f22c6b54f63958f04a3a6'
-                ]);
-                ?>
-                <p><strong>Certificado para actividad 691f22c6b54f63958f04a3a6:</strong>
-                    <?= $certificadoEspecifico ? '✅ ENCONTRADO' : '❌ NO ENCONTRADO' ?>
-                </p>
+            
+            <!-- DEBUG: Información de IDs -->
+            <div style="background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 5px; border: 1px solid #dee2e6;">
+                <h4>🔍 Información de IDs:</h4>
+                <p><strong>ID en sesión (raw):</strong> <?= var_export($_SESSION['usuario']['_id'], true) ?></p>
+                <p><strong>ID normalizado:</strong> <?= $voluntarioId ?></p>
+                <p><strong>ID que sabemos funciona:</strong> 6914c19efb1a0dfe1301b9bb</p>
+                <p><strong>Certificados con ID normalizado:</strong> <?= iterator_count($certificados) ?></p>
+                <p><strong>Certificados con ID específico:</strong> <?= iterator_count($certificadosDebug) ?></p>
             </div>
-
+            
+            <?php if (iterator_count($certificadosDebug) > 0): ?>
+                <div style="background: #d4edda; padding: 15px; margin: 15px 0; border-radius: 5px; border: 1px solid #c3e6cb;">
+                    <h4>✅ Certificados encontrados con ID específico:</h4>
+                    <div class="certificados-grid">
+                        <?php foreach ($certificadosDebug as $cert): 
+                            $actividad = $bd->actividades->findOne([
+                                '_id' => new ObjectId($cert['actividad_id'])
+                            ]);
+                        ?>
+                            <div class="certificado-card">
+                                <div class="certificado-header">
+                                    <h4><?= htmlspecialchars($cert['titulo_actividad']) ?></h4>
+                                    <span class="certificado-codigo"><?= $cert['codigo_certificado'] ?></span>
+                                </div>
+                                <div class="certificado-body">
+                                    <p><strong>Organización:</strong> <?= htmlspecialchars($cert['nombre_organizacion']) ?></p>
+                                    <p><strong>Fecha de actividad:</strong> <?= htmlspecialchars($cert['fecha_actividad']) ?></p>
+                                    <p><strong>Horas de voluntariado:</strong> <?= $cert['horas_voluntariado'] ?> horas</p>
+                                    <p><strong>Fecha de emisión:</strong> <?= htmlspecialchars($cert['fecha_emision']) ?></p>
+                                </div>
+                                <div class="certificado-actions">
+                                    <button onclick="verCertificado('<?= $cert['_id'] ?>')" class="btn-ver">👁️ Ver Certificado</button>
+                                    <button onclick="descargarCertificado('<?= $cert['_id'] ?>')" class="btn-descargar">📥 Descargar</button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
             <?php if (iterator_count($certificados) > 0): ?>
                 <div class="certificados-grid">
-                    <?php foreach ($certificados as $cert):
+                    <?php foreach ($certificados as $cert): 
                         $actividad = $bd->actividades->findOne([
                             '_id' => new ObjectId($cert['actividad_id'])
                         ]);
@@ -92,6 +131,7 @@ $certificados = $bd->certificados->find([
         </div>
     </div>
 </div>
+
 
 <!-- Modal para ver certificado -->
 <div id="modalCertificado" class="modal">
