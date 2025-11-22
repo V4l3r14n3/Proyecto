@@ -220,7 +220,6 @@ foreach ($inscripciones as $inscripcion) {
     </style>
 </head>
 <body>
-    <?php include 'includes/layout_header.php'; ?>
     
     <div class="main-content">
         <h2>👥 Voluntarios Inscritos en Mis Actividades</h2>
