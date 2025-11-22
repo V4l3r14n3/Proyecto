@@ -12,7 +12,7 @@ if ($_SESSION['usuario']['rol'] !== "organizacion") {
 
 // Obtener mensajes SOLO de su organización
 $mensajes = $bd->foro->find([
-    "id_organizacion" => $_SESSION['usuario']['_id']
+    "id_organizacion" => $_SESSION['usuario']['_id']['$oid']
 ]);
 ?>
 

@@ -10,12 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     // Identificar si quien escribe es voluntario u organización
     if (isset($_SESSION['usuario']['rol']) && $_SESSION['usuario']['rol'] === "organizacion") {
         $autor = "organizacion";
-        $id_organizacion = $_SESSION['usuario']['id'];
+        $id_organizacion = $_SESSION['usuario']['_id']['$oid']
+;
         $id_voluntario = null;
     } else {
         $autor = "voluntario";
         $id_organizacion = $_POST['id_organizacion']; 
-        $id_voluntario = $_SESSION['usuario']['id'];
+        $id_voluntario = $_SESSION['usuario']['_id'];
     }
 
     $foro = [
