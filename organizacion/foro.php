@@ -1,10 +1,7 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/Proyecto/includes/conexion.php";
 include "includes/layout.php";
-echo "<pre>";
-print_r($_SESSION['usuario']);
-echo "</pre>";
-exit;
+
 if ($_SESSION['usuario']['rol'] !== "organizacion") {
     header("Location: ../index.php");
     exit;
