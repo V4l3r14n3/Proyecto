@@ -330,16 +330,15 @@ foreach ($inscripciones as $inscripcion) {
             ?>
                 <div class="evento-grupo">
                     <h3 class="titulo-evento">🎯 <?= htmlspecialchars($actividad['titulo']) ?>
-                        <small>- <?= htmlspecialchars($actividad['fecha_hora'] ?? 'Fecha no especificada') ?></small>
-                    </h3>
+                        <small>- <?= formatearFecha($actividad['fecha_hora'] ?? '') ?></small>
                     </h3>
 
                     <div class="info-box">
                         <strong>📋 Información de la actividad:</strong><br>
+                        <strong>Fecha:</strong> <?= formatearFecha($actividad['fecha_hora'] ?? '') ?> |
                         <strong>Lugar:</strong> <?= htmlspecialchars($actividad['lugar'] ?? 'No especificado') ?> |
                         <strong>Descripción:</strong> <?= htmlspecialchars(substr($actividad['descripcion'] ?? 'Sin descripción', 0, 100)) ?>...
                     </div>
-
                     <div class="info-box">
                         <strong>👥 <?= count($inscripcionesEvento) ?> voluntario(s) inscrito(s) en esta actividad</strong>
                     </div>
