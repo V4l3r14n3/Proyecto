@@ -1,7 +1,10 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT']."/Proyecto/includes/conexion.php";
 include "includes/layout.php";
-
+echo "<pre>";
+print_r($_SESSION['usuario']);
+echo "</pre>";
+exit;
 if ($_SESSION['usuario']['rol'] !== "organizacion") {
     header("Location: ../index.php");
     exit;
@@ -9,7 +12,7 @@ if ($_SESSION['usuario']['rol'] !== "organizacion") {
 
 // Obtener mensajes SOLO de su organización
 $mensajes = $bd->foro->find([
-    "id_organizacion" => $_SESSION['usuario']['id']
+    "id_organizacion" => $_SESSION['usuario']['_id']
 ]);
 ?>
 
