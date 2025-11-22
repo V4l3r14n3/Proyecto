@@ -16,17 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $id_voluntario = null;
 
     } else {
-    $autor = "voluntario";
-
-    // Buscar organización asignada desde la BD
-    $voluntarioBD = $bd->voluntarios->findOne([
-        "_id" => new MongoDB\BSON\ObjectId($_SESSION['usuario']['_id']['$oid'])
-    ]);
-
-    $id_organizacion = $voluntarioBD['id_organizacion'] ?? null;
-
-    $id_voluntario = $_SESSION['usuario']['_id']['$oid'];
-}
+        $autor = "voluntario";
+        
+        // USAR el id_organizacion del select, no buscar en la BD del voluntario
+        $id_organizacion = $_POST['id_organizacion'];
+        $id_voluntario = $_SESSION['usuario']['_id']['$oid'];
+    }
 
     // Estructura del documento que se guardará en MongoDB
     $foro = [
@@ -50,3 +45,4 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     exit;
 }
+?>

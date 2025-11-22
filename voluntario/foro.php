@@ -10,6 +10,10 @@ if ($_SESSION['usuario']['rol'] !== "voluntario") {
 // Voluntario ve todo el foro global
 $mensajes = $bd->foro->find();
 $organizaciones = $bd->organizaciones->find();
+
+// DEBUG: Verificar organizaciones
+echo "<!-- DEBUG: Número de organizaciones: " . iterator_count($organizaciones) . " -->";
+$organizaciones->rewind(); // Reiniciar el cursor para poder usarlo después
 ?>
 
 <div class="main-content">
@@ -18,14 +22,21 @@ $organizaciones = $bd->organizaciones->find();
     <form action="../includes/guardar_foro.php" method="POST" class="formulario-panel">
         <label>Enviar mensaje a:</label>
         <select name="id_organizacion" required>
-            <option disabled selected>Selecciona una organización</option>
-            <?php foreach ($organizaciones as $org): ?>
-                <option value="<?= $org['_id']->__toString() ?>">
-                    <?= $org['nombre_org'] ?>
+            <option value="" disabled selected>Selecciona una organización</option>
+            <?php
+            $organizaciones = $bd->organizaciones->find();
+            foreach ($organizaciones as $org):
+                // Asegurar el formato correcto del ObjectId
+                $orgId = $org['_id'];
+                if ($orgId instanceof MongoDB\BSON\ObjectId) {
+                    $orgId = $orgId->__toString();
+                }
+            ?>
+                <option value="<?= htmlspecialchars($orgId) ?>">
+                    <?= htmlspecialchars($org['nombre_org'] ?? 'Sin nombre') ?>
                 </option>
             <?php endforeach; ?>
         </select>
-
 
         <label>Título</label>
         <input type="text" name="titulo" required>
