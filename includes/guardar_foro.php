@@ -7,18 +7,26 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $titulo = $_POST['titulo'];
     $mensaje = $_POST['mensaje'];
 
-    // Identificar si quien escribe es voluntario u organización
+    // Detectar quién está escribiendo
     if (isset($_SESSION['usuario']['rol']) && $_SESSION['usuario']['rol'] === "organizacion") {
+        
         $autor = "organizacion";
-        $id_organizacion = $_SESSION['usuario']['_id']['$oid']
-;
+        // ID guardado en sesión para organización
+        $id_organizacion = $_SESSION['usuario']['_id']['$oid'];
         $id_voluntario = null;
+
     } else {
+
         $autor = "voluntario";
-        $id_organizacion = $_POST['id_organizacion']; 
-        $id_voluntario = $_SESSION['usuario']['_id'];
+
+        // El voluntario pertenece a una organización → debe venir desde sesión, NO POST
+        $id_organizacion = $_SESSION['usuario']['id_organizacion'] ?? null;
+
+        // ID del voluntario
+        $id_voluntario = $_SESSION['usuario']['_id']['$oid'];
     }
 
+    // Estructura del documento que se guardará en MongoDB
     $foro = [
         "titulo" => $titulo,
         "mensaje" => $mensaje,
@@ -28,8 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         "fecha" => date("Y-m-d H:i:s")
     ];
 
+    // Guardar en base de datos
     $bd->foro->insertOne($foro);
 
-    header("Location: ../pages/foro.php");
+    // Redirigir según el tipo de usuario
+    if ($_SESSION['usuario']['rol'] === "organizacion") {
+        header("Location: ../organizacion/foro.php");
+    } else {
+        header("Location: ../voluntario/foro.php");
+    }
+
     exit;
 }
