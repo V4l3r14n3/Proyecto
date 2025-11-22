@@ -25,7 +25,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'organizacio
         <a href="<?= ORG_URL ?>crear_voluntariado.php">➕ Crear Voluntariado</a>
         <a href="<?= ORG_URL ?>mis_voluntariados.php">📋 Mis voluntariados</a>
         <a href="<?= ORG_URL ?>voluntarios.php">👥 Voluntarios</a>
-        <a href="<?= ORG_URL ?>mensajes.php">💬 Mensajes</a>
+        <a href="<?= ORG_URL ?>foro.php">📢 Foro</a>
     </nav>
 
     <div class="theme-toggle">

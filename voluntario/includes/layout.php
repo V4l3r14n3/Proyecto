@@ -30,7 +30,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
         <a href="<?= VOL_URL ?>perfil.php">👤 Mi Perfil</a>
         <a href="<?= VOL_URL ?>voluntariados.php">🌱 Buscar voluntariados</a>
         <a href="<?= VOL_URL ?>mis_postulaciones.php">📌 Mis postulaciones</a>
-        <a href="<?= VOL_URL ?>mensajes.php">💬 Mensajes</a>
+        <a href="<?= VOL_URL ?>foro.php">📢 Foro</a>
     </nav>
 
     <div class="theme-toggle">
