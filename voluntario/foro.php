@@ -127,7 +127,7 @@ $mensajes = $bd->foro->find();
     </style>
 </head>
 <body>
-    <?php include 'includes/layout_header.php'; ?>
+    <?php include 'includes/layout_footer.php'; ?>
 
     <div class="main-content">
         <h2>📢 Foro General</h2>
