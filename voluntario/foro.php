@@ -20,9 +20,12 @@ $organizaciones = $bd->organizaciones->find();
         <select name="id_organizacion" required>
             <option disabled selected>Selecciona una organización</option>
             <?php foreach ($organizaciones as $org): ?>
-                <option value="<?= $org['_id']['$oid'] ?>"><?= $org['nombre_org'] ?></option>
+                <option value="<?= $org['_id']->__toString() ?>">
+                    <?= $org['nombre_org'] ?>
+                </option>
             <?php endforeach; ?>
         </select>
+
 
         <label>Título</label>
         <input type="text" name="titulo" required>
