@@ -6,7 +6,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     // Validar que los campos requeridos estén presentes
     if (empty($_POST['titulo']) || empty($_POST['mensaje'])) {
-        $_SESSION['error'] = "Todos los campos son requeridos";
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error',
+            'message' => 'Todos los campos son requeridos'
+        ];
         header("Location: " . ($_SESSION['usuario']['rol'] === "organizacion" ? "../organizacion/foro.php" : "../voluntario/foro.php"));
         exit;
     }
@@ -27,7 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         
         // Validar que se haya seleccionado una organización
         if (empty($_POST['id_organizacion'])) {
-            $_SESSION['error'] = "Debes seleccionar una organización";
+            $_SESSION['alert'] = [
+                'type' => 'error',
+                'title' => 'Error',
+                'message' => 'Debes seleccionar una organización'
+            ];
             header("Location: ../voluntario/foro.php");
             exit;
         }
@@ -43,7 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $orgObjectId = new MongoDB\BSON\ObjectId($id_organizacion);
         }
     } catch (Exception $e) {
-        $_SESSION['error'] = "ID de organización inválido";
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error',
+            'message' => 'ID de organización inválido'
+        ];
         header("Location: " . ($_SESSION['usuario']['rol'] === "organizacion" ? "../organizacion/foro.php" : "../voluntario/foro.php"));
         exit;
     }
@@ -63,13 +75,25 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         $result = $bd->foro->insertOne($foro);
         
         if ($result->getInsertedCount() === 1) {
-            $_SESSION['success'] = "Mensaje publicado correctamente";
+            $_SESSION['alert'] = [
+                'type' => 'success',
+                'title' => '¡Éxito!',
+                'message' => 'Mensaje publicado correctamente'
+            ];
         } else {
-            $_SESSION['error'] = "Error al publicar el mensaje";
+            $_SESSION['alert'] = [
+                'type' => 'error',
+                'title' => 'Error',
+                'message' => 'Error al publicar el mensaje'
+            ];
         }
         
     } catch (Exception $e) {
-        $_SESSION['error'] = "Error de base de datos: " . $e->getMessage();
+        $_SESSION['alert'] = [
+            'type' => 'error',
+            'title' => 'Error de base de datos',
+            'message' => 'No se pudo publicar el mensaje: ' . $e->getMessage()
+        ];
     }
 
     // Redirigir según el tipo de usuario

@@ -45,3 +45,61 @@ $mensajes = $bd->foro->find([
     </table>
 </div>
 <?php include 'includes/layout_footer.php'; ?>
+
+<!-- Al final del archivo foro.php de organización, antes del </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    // Mostrar alerta si hay mensaje en sesión
+    <?php if (isset($_SESSION['alert'])): ?>
+        const alertData = <?= json_encode($_SESSION['alert']) ?>;
+        
+        Swal.fire({
+            icon: alertData.type,
+            title: alertData.title,
+            text: alertData.message,
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+            timer: alertData.type === 'success' ? 3000 : 5000,
+            timerProgressBar: true
+        });
+
+        <?php unset($_SESSION['alert']); ?>
+    <?php endif; ?>
+
+    // Confirmación antes de enviar el formulario (opcional para organización)
+    document.querySelector('form')?.addEventListener('submit', function(e) {
+        const titulo = document.querySelector('input[name="titulo"]').value;
+        const mensaje = document.querySelector('textarea[name="mensaje"]').value;
+        
+        if (titulo && mensaje) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: '¿Publicar mensaje?',
+                text: '¿Estás seguro de que quieres publicar este mensaje en el foro de tu organización?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, publicar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Mostrar loading mientras se envía
+                    Swal.fire({
+                        title: 'Publicando...',
+                        text: 'Por favor espera',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Enviar formulario
+                    document.querySelector('form').submit();
+                }
+            });
+        }
+    });
+</script>
