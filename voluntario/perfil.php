@@ -288,7 +288,6 @@ $certificados = new ArrayIterator($misCertificados);
                                 </div>
                                 <div class="certificado-acciones">
                                     <a href="funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
-                                    <a href="funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar" target="_blank">📥 Descargar PDF</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>

@@ -171,7 +171,7 @@ try {
         Fecha de emisión: <?= htmlspecialchars($certificado['fecha_emision']) ?>
     </div>
 
-    <center><button class="btn-print" onclick="window.print()">📄 Imprimir Certificado</button></center>
+    <center><button class="btn-print" onclick="window.print()">📥 Imprimir Certificado</button></center>
 </div>
 
 <?php
