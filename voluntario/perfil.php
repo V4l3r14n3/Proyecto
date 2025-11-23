@@ -10,21 +10,50 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
     exit();
 }
 
-// SOLUCIÓN: Buscar todos los certificados y filtrar manualmente
+// SOLUCIÓN MEJORADA: Buscar certificados con comparación flexible
 $todosLosCertificados = $bd->certificados->find();
 $misCertificados = [];
 
 foreach ($todosLosCertificados as $cert) {
-    // Comparación flexible de IDs
+    // Conversión segura a string para comparar
     $idCertificado = (string)$cert['voluntario_id'];
     $idSesion = (string)$_SESSION['usuario']['_id']['$oid'];
-
-    if ($idCertificado === $idSesion) {
+    
+    // También probar sin el '$oid' si es necesario
+    $idSesionAlternativo = isset($_SESSION['usuario']['_id']) ? 
+        (is_array($_SESSION['usuario']['_id']) ? 
+            (string)$_SESSION['usuario']['_id']['$oid'] : 
+            (string)$_SESSION['usuario']['_id']) : 
+        '';
+    
+    // Comparaciones múltiples
+    if ($idCertificado === $idSesion || 
+        $idCertificado === $idSesionAlternativo ||
+        trim($idCertificado) === trim($idSesion) ||
+        str_replace('"', '', $idCertificado) === str_replace('"', '', $idSesion)) {
         $misCertificados[] = $cert;
     }
 }
 
-// Convertir a ArrayIterator para mantener compatibilidad
+// Si no encuentra certificados, probar búsqueda directa
+if (empty($misCertificados)) {
+    echo "<!-- Búsqueda alternativa -->";
+    try {
+        $misCertificados = $bd->certificados->find([
+            'voluntario_id' => $_SESSION['usuario']['_id']['$oid']
+        ])->toArray();
+        
+        if (empty($misCertificados)) {
+            // Último intento sin el array
+            $misCertificados = $bd->certificados->find([
+                'voluntario_id' => $_SESSION['usuario']['_id']
+            ])->toArray();
+        }
+    } catch (Exception $e) {
+        echo "<!-- Error en búsqueda: " . $e->getMessage() . " -->";
+    }
+}
+
 $certificados = new ArrayIterator($misCertificados);
 ?>
 
