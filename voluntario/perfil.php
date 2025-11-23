@@ -10,13 +10,30 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
     exit();
 }
 
-// Buscar certificados del voluntario actual
-try {
-    $misCertificados = $bd->certificados->find([
-        'voluntario_id' => $_SESSION['usuario']['_id']['$oid']
-    ])->toArray();
-} catch (Exception $e) {
-    $misCertificados = [];
+// SOLUCIÓN MEJORADA: Buscar certificados con comparación flexible
+$todosLosCertificados = $bd->certificados->find();
+$misCertificados = [];
+
+foreach ($todosLosCertificados as $cert) {
+    // Conversión segura a string para comparar
+    $idCertificado = (string)$cert['voluntario_id'];
+    $idSesion = (string)$_SESSION['usuario']['_id']['$oid'];
+    
+    // Comparación flexible
+    if ($idCertificado === $idSesion) {
+        $misCertificados[] = $cert;
+    }
+}
+
+// Si no encuentra certificados, probar búsqueda directa
+if (empty($misCertificados)) {
+    try {
+        $misCertificados = $bd->certificados->find([
+            'voluntario_id' => $_SESSION['usuario']['_id']['$oid']
+        ])->toArray();
+    } catch (Exception $e) {
+        $misCertificados = [];
+    }
 }
 
 $certificados = new ArrayIterator($misCertificados);
@@ -100,7 +117,8 @@ $certificados = new ArrayIterator($misCertificados);
             margin-top: 15px;
         }
 
-        .btn-ver, .btn-descargar {
+        .btn-ver,
+        .btn-descargar {
             padding: 8px 16px;
             border-radius: 6px;
             text-decoration: none;
@@ -249,6 +267,7 @@ $certificados = new ArrayIterator($misCertificados);
                 <?php if (count($misCertificados) > 0): ?>
                     <div class="certificados-grid">
                         <?php foreach ($misCertificados as $cert):
+                            // Obtener información adicional de la actividad
                             $actividad = $bd->actividades->findOne([
                                 '_id' => new ObjectId($cert['actividad_id'])
                             ]);
