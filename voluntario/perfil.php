@@ -10,48 +10,13 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'voluntario'
     exit();
 }
 
-// SOLUCIÓN MEJORADA: Buscar certificados con comparación flexible
-$todosLosCertificados = $bd->certificados->find();
-$misCertificados = [];
-
-foreach ($todosLosCertificados as $cert) {
-    // Conversión segura a string para comparar
-    $idCertificado = (string)$cert['voluntario_id'];
-    $idSesion = (string)$_SESSION['usuario']['_id']['$oid'];
-    
-    // También probar sin el '$oid' si es necesario
-    $idSesionAlternativo = isset($_SESSION['usuario']['_id']) ? 
-        (is_array($_SESSION['usuario']['_id']) ? 
-            (string)$_SESSION['usuario']['_id']['$oid'] : 
-            (string)$_SESSION['usuario']['_id']) : 
-        '';
-    
-    // Comparaciones múltiples
-    if ($idCertificado === $idSesion || 
-        $idCertificado === $idSesionAlternativo ||
-        trim($idCertificado) === trim($idSesion) ||
-        str_replace('"', '', $idCertificado) === str_replace('"', '', $idSesion)) {
-        $misCertificados[] = $cert;
-    }
-}
-
-// Si no encuentra certificados, probar búsqueda directa
-if (empty($misCertificados)) {
-    echo "<!-- Búsqueda alternativa -->";
-    try {
-        $misCertificados = $bd->certificados->find([
-            'voluntario_id' => $_SESSION['usuario']['_id']['$oid']
-        ])->toArray();
-        
-        if (empty($misCertificados)) {
-            // Último intento sin el array
-            $misCertificados = $bd->certificados->find([
-                'voluntario_id' => $_SESSION['usuario']['_id']
-            ])->toArray();
-        }
-    } catch (Exception $e) {
-        echo "<!-- Error en búsqueda: " . $e->getMessage() . " -->";
-    }
+// Buscar certificados del voluntario actual
+try {
+    $misCertificados = $bd->certificados->find([
+        'voluntario_id' => $_SESSION['usuario']['_id']['$oid']
+    ])->toArray();
+} catch (Exception $e) {
+    $misCertificados = [];
 }
 
 $certificados = new ArrayIterator($misCertificados);
@@ -128,39 +93,46 @@ $certificados = new ArrayIterator($misCertificados);
             line-height: 1.4;
         }
 
-        .certificado-actions {
-            margin-top: 1rem;
+        /* === BOTONES DE CERTIFICADOS === */
+        .certificado-acciones {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
         }
 
-        .btn-ver,
-        .btn-descargar {
-            padding: 8px 12px;
+        .btn-ver, .btn-descargar {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 0.8rem;
-            transition: background-color 0.2s ease;
+            display: inline-block;
+            text-align: center;
+            font-weight: 500;
         }
 
         .btn-ver {
-            background: #3498db;
+            background: #00724f;
             color: white;
         }
 
         .btn-ver:hover {
-            background: #2980b9;
+            background: #005a3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 114, 79, 0.3);
         }
 
         .btn-descargar {
-            background: #27ae60;
+            background: #00bfa6;
             color: white;
         }
 
         .btn-descargar:hover {
-            background: #219a52;
+            background: #009c7e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 191, 166, 0.3);
         }
 
         .no-certificados {
@@ -170,43 +142,6 @@ $certificados = new ArrayIterator($misCertificados);
             background: #f8f9fa;
             border-radius: 10px;
             border: 2px dashed #dee2e6;
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .certificado-modal {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .close:hover {
-            color: #000;
         }
 
         .perfil-form {
@@ -249,12 +184,31 @@ $certificados = new ArrayIterator($misCertificados);
             background: #2980b9;
         }
 
+        /* Modo oscuro */
+        body.dark-mode .btn-ver {
+            background: #00bfa6;
+            color: #1b1b1b;
+        }
+
+        body.dark-mode .btn-ver:hover {
+            background: #00d4b0;
+        }
+
+        body.dark-mode .btn-descargar {
+            background: #00724f;
+            color: white;
+        }
+
+        body.dark-mode .btn-descargar:hover {
+            background: #008a65;
+        }
+
         @media (max-width: 768px) {
             .perfil-container {
                 grid-template-columns: 1fr;
             }
 
-            .certificado-actions {
+            .certificado-acciones {
                 flex-direction: column;
             }
 
@@ -263,83 +217,6 @@ $certificados = new ArrayIterator($misCertificados);
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-        }
-
-        /* Estilos para el certificado en el modal */
-        .certificado-completo {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-        }
-
-        .certificado-titulo {
-            text-align: center;
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .certificado-contenido {
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        .certificado-nombre {
-            color: #e74c3c;
-            font-size: 1.5rem;
-            margin: 1rem 0;
-            font-weight: bold;
-        }
-
-        .certificado-footer {
-            text-align: center;
-            border-top: 2px solid #3498db;
-            padding-top: 1rem;
-            margin-top: 1.5rem;
-            color: #7f8c8d;
-        }
-
-        /* === BOTONES DE CERTIFICADOS === */
-        .certificado-acciones {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-ver,
-        .btn-descargar {
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-ver {
-            background: #00724f;
-            color: white;
-        }
-
-        .btn-descargar {
-            background: #00bfa6;
-            color: white;
-        }
-
-        .btn-ver:hover,
-        .btn-descargar:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        /* Modo oscuro */
-        body.dark-mode .btn-ver {
-            background: #00bfa6;
-        }
-
-        body.dark-mode .btn-descargar {
-            background: #00724f;
         }
     </style>
 </head>
@@ -372,7 +249,6 @@ $certificados = new ArrayIterator($misCertificados);
                 <?php if (count($misCertificados) > 0): ?>
                     <div class="certificados-grid">
                         <?php foreach ($misCertificados as $cert):
-                            // Obtener información adicional de la actividad
                             $actividad = $bd->actividades->findOne([
                                 '_id' => new ObjectId($cert['actividad_id'])
                             ]);
@@ -392,9 +268,6 @@ $certificados = new ArrayIterator($misCertificados);
                                     <?php endif; ?>
                                 </div>
                                 <div class="certificado-acciones">
-                                    <!-- Debug: muestra el ID del certificado -->
-                                    <small style="display:block; color: #666;">ID: <?= $cert['_id'] ?></small>
-
                                     <a href="funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
                                     <a href="funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar" target="_blank">📥 Descargar PDF</a>
                                 </div>
@@ -415,86 +288,9 @@ $certificados = new ArrayIterator($misCertificados);
         </div>
     </div>
 
-    <!-- Modal para ver certificado -->
-    <div id="modalCertificado" class="modal">
-        <div class="modal-content certificado-modal">
-            <span class="close">&times;</span>
-            <div id="contenidoCertificado"></div>
-        </div>
-    </div>
-
     <?php include 'includes/layout_footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-    <script>
-        function verCertificado(certificadoId) {
-            // Mostrar loading
-            Swal.fire({
-                title: 'Cargando certificado...',
-                text: 'Por favor espera',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            fetch(`funciones/obtener_certificado.php?id=${certificadoId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al cargar el certificado');
-                    }
-                    return response.text();
-                })
-                .then(html => {
-                    Swal.close();
-                    document.getElementById('contenidoCertificado').innerHTML = html;
-                    document.getElementById('modalCertificado').style.display = 'block';
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No se pudo cargar el certificado: ' + error.message,
-                        confirmButtonColor: '#e74c3c'
-                    });
-                });
-        }
-
-        function descargarCertificado(certificadoId) {
-            Swal.fire({
-                title: 'Preparando descarga...',
-                text: 'Generando tu certificado en formato PDF',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Redirigir a la función de descarga
-            setTimeout(() => {
-                window.location.href = `funciones/descargar_certificado.php?id=${certificadoId}`;
-            }, 1000);
-        }
-
-        // Cerrar modal
-        document.querySelector('.close').onclick = function() {
-            document.getElementById('modalCertificado').style.display = 'none';
-        }
-
-        // Cerrar modal al hacer clic fuera
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('modalCertificado')) {
-                document.getElementById('modalCertificado').style.display = 'none';
-            }
-        }
-
-        // Cerrar modal con ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                document.getElementById('modalCertificado').style.display = 'none';
-            }
-        });
-    </script>
 
     <?php if (isset($_GET['status']) && $_GET['status'] === 'ok'): ?>
         <script>
@@ -507,7 +303,6 @@ $certificados = new ArrayIterator($misCertificados);
                     timer: 3000,
                     timerProgressBar: true
                 }).then(() => {
-                    // Limpiar URL sin recargar la página
                     history.replaceState(null, "", location.pathname);
                 });
             });
