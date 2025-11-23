@@ -559,3 +559,64 @@ body.dark-mode select option {
     border: 1px solid #e0e0e0;
     font-size: 0.8rem;
 }
+
+/* === BOTONES DE CERTIFICADOS - SOLUCIÓN DEFINITIVA === */
+.certificado-acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-ver, .btn-descargar {
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    font-weight: 500;
+}
+
+.btn-ver {
+    background: #00724f;
+    color: white;
+}
+
+.btn-ver:hover {
+    background: #005a3e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 114, 79, 0.3);
+}
+
+.btn-descargar {
+    background: #00bfa6;
+    color: white;
+}
+
+.btn-descargar:hover {
+    background: #009c7e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 191, 166, 0.3);
+}
+
+/* Modo oscuro */
+body.dark-mode .btn-ver {
+    background: #00bfa6;
+    color: #1b1b1b;
+}
+
+body.dark-mode .btn-ver:hover {
+    background: #00d4b0;
+}
+
+body.dark-mode .btn-descargar {
+    background: #00724f;
+    color: white;
+}
+
+body.dark-mode .btn-descargar:hover {
+    background: #008a65;
+}

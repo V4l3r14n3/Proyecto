@@ -271,45 +271,47 @@ $certificados = new ArrayIterator($misCertificados);
         }
 
         /* === BOTONES DE CERTIFICADOS === */
-.certificado-acciones {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
+        .certificado-acciones {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
 
-.btn-ver, .btn-descargar {
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-    border: none;
-    cursor: pointer;
-}
+        .btn-ver,
+        .btn-descargar {
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
 
-.btn-ver {
-    background: #00724f;
-    color: white;
-}
+        .btn-ver {
+            background: #00724f;
+            color: white;
+        }
 
-.btn-descargar {
-    background: #00bfa6;
-    color: white;
-}
+        .btn-descargar {
+            background: #00bfa6;
+            color: white;
+        }
 
-.btn-ver:hover, .btn-descargar:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
+        .btn-ver:hover,
+        .btn-descargar:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
 
-/* Modo oscuro */
-body.dark-mode .btn-ver {
-    background: #00bfa6;
-}
+        /* Modo oscuro */
+        body.dark-mode .btn-ver {
+            background: #00bfa6;
+        }
 
-body.dark-mode .btn-descargar {
-    background: #00724f;
-}
+        body.dark-mode .btn-descargar {
+            background: #00724f;
+        }
     </style>
 </head>
 
@@ -361,8 +363,11 @@ body.dark-mode .btn-descargar {
                                     <?php endif; ?>
                                 </div>
                                 <div class="certificado-acciones">
-                                    <a href="/../Proyecto/voluntario/funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
-                                    <a href="/../Proyecto/voluntario/funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar"> 📥 Descargar PDF</a>
+                                    <!-- Debug: muestra el ID del certificado -->
+                                    <small style="display:block; color: #666;">ID: <?= $cert['_id'] ?></small>
+
+                                    <a href="funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-ver" target="_blank">👁️ Ver Certificado</a>
+                                    <a href="funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-descargar" target="_blank">📥 Descargar PDF</a>
                                 </div>
                             </div>
                         <?php endforeach; ?>
