@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
-require_once __DIR__ . '/vendor/autoload.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/vendor/autoload.php";
 
 use MongoDB\BSON\ObjectId;
 use Dompdf\Dompdf;
@@ -43,11 +43,8 @@ $html = "
 </div>
 ";
 
-// Instanciar dompdf
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'landscape'); // Puede ser portrait o landscape
+$dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
-
-// Descargar PDF
 $dompdf->stream("certificado_voluntariado.pdf", ["Attachment" => true]);
