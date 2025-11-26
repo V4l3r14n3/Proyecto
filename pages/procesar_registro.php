@@ -25,23 +25,32 @@ if ($existe) {
     exit;
 }
 
-// Intentar guardar el usuario
+// Crear documento base
+$documento = [
+    'nombre' => $nombre,
+    'email' => $email,
+    'password' => $password,
+    'rol' => $rol,
+    'nombre_org' => $nombre_org
+];
+
+// Si es organización, se registra como "pendiente"
+if ($rol === 'organizacion') {
+    $documento['estado'] = 'pendiente';
+}
+
 try {
-    $bd->usuarios->insertOne([
-        'nombre' => $nombre,
-        'email' => $email,
-        'password' => $password,
-        'rol' => $rol,
-        'nombre_org' => $nombre_org
-    ]);
+    $bd->usuarios->insertOne($documento);
 
     echo json_encode([
         'status' => 'success',
-        'mensaje' => 'Registro exitoso. ¡Bienvenido!',
+        'mensaje' => $rol === 'organizacion'
+            ? 'Registro exitoso. Tu organización debe ser aprobada antes de iniciar sesión.'
+            : 'Registro exitoso. ¡Ya puedes iniciar sesión!'
     ]);
 
 } catch (MongoDB\Driver\Exception\BulkWriteException $e) {
-    // Si el error es por duplicado
+
     if ($e->getCode() === 11000) {
         echo json_encode([
             'status' => 'error',

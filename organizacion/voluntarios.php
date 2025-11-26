@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['marcar_asistencia']))
         ];
     }
 
-    header("Location: voluntarios_inscritos.php");
+    header("Location: voluntarios.php");
     exit();
 }
 

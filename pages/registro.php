@@ -5,7 +5,7 @@ include '../includes/conexion.php';
 <div class="form-page">
     <section class="formulario">
         <h2>Registro de Usuario</h2>
-        <form id="registroForm">
+        <form id="registroForm" method="POST" action="procesar_registro.php">
             <label>Nombre completo:</label>
             <input type="text" name="nombre" required>
 
@@ -38,12 +38,10 @@ include '../includes/conexion.php';
                     ?>
                     <option value="nueva">+ Nueva organización</option>
                 </select>
-                <input type="text" id="inputOrganizacion" name="nombre_org_nueva" placeholder="Escribe el nombre de la nueva organización" style="display:none;">
+                <input type="text" id="inputOrganizacion" name="nombre_org_nueva" placeholder="Nueva organización" style="display:none;">
             </div>
 
             <button type="submit">Registrar</button>
-
-            <!-- Enlace para login -->
             <p class="form-link">
                 ¿Ya tienes una cuenta? <a href="login.php">Inicia sesión aquí</a>
             </p>
@@ -52,5 +50,27 @@ include '../includes/conexion.php';
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- (Tu script JS actual sigue igual) -->
+
+<script>
+document.getElementById("rol").addEventListener("change", function () {
+    const campo = document.getElementById("campoOrganizacion");
+    const select = document.getElementById("selectOrganizacion");
+    const input = document.getElementById("inputOrganizacion");
+
+    if (this.value === "organizacion") {
+        campo.style.display = "block";
+        select.style.display = "block";
+    } else {
+        campo.style.display = "none";
+        select.style.display = "none";
+        input.style.display = "none";
+    }
+});
+
+document.getElementById("selectOrganizacion").addEventListener("change", function () {
+    const input = document.getElementById("inputOrganizacion");
+    input.style.display = (this.value === "nueva") ? "block" : "none";
+});
+</script>
+
 <?php include '../includes/footer.php'; ?>
