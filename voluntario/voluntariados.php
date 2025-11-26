@@ -28,6 +28,10 @@ if (!empty($_GET['ciudad'])) {
     $filtro['ciudad'] = ['$regex' => $_GET['ciudad'], '$options' => 'i'];
 }
 
+if (!empty($_GET['organizacion'])) {
+    $filtro['organizacion'] = ['$regex' => $_GET['organizacion'], '$options' => 'i'];
+}
+
 // Corrección: usar fecha_hora con regex
 if (!empty($_GET['fecha'])) {
     $filtro['fecha_hora'] = ['$regex' => $_GET['fecha']];
@@ -60,6 +64,8 @@ foreach ($postulaciones as $p) {
 
         <input type="text" name="ciudad" placeholder="Ciudad..." value="<?= $_GET['ciudad'] ?? '' ?>">
 
+        <input type="text" name="organizacion" placeholder="Organización..." value="<?= $_GET['organizacion'] ?? '' ?>">
+
         <input type="date" name="fecha" value="<?= $_GET['fecha'] ?? '' ?>">
 
         <button type="submit">Filtrar</button>
@@ -70,6 +76,7 @@ foreach ($postulaciones as $p) {
         <tr>
             <th>Título</th>
             <th>Descripción</th>
+            <th>Organización</th>
             <th>Ciudad</th>
             <th>Fecha</th>
             <th>Acción</th>
@@ -84,6 +91,7 @@ foreach ($postulaciones as $p) {
             <tr>
                 <td><?= htmlspecialchars($v['titulo']) ?></td>
                 <td><?= htmlspecialchars($v['descripcion']) ?></td>
+                <td><?= htmlspecialchars($v['organizacion'] ?? "No definida") ?></td>
                 <td><?= htmlspecialchars($v['ciudad'] ?? "No definida") ?></td>
                 <td>
                     <?php
