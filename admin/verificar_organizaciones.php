@@ -1,5 +1,5 @@
 <?php
-include "layout.php";
+include "includes/layout.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/conexion.php";
 
 // Obtener organizaciones pendientes
