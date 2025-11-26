@@ -48,6 +48,23 @@ foreach ($insignias as $badge) {
         $insigniasDesbloqueadas[] = $badge['nombre'];
     }
 }
+// Detectar insignias nuevas
+$nuevasInsignias = [];
+
+if (!isset($_SESSION['insignias_guardadas'])) {
+    $_SESSION['insignias_guardadas'] = [];
+}
+
+// Buscar cuáles son nuevas
+foreach ($insigniasDesbloqueadas as $insignia) {
+    if (!in_array($insignia, $_SESSION['insignias_guardadas'])) {
+        $nuevasInsignias[] = $insignia;
+    }
+}
+
+// Actualizar sesión
+$_SESSION['insignias_guardadas'] = $insigniasDesbloqueadas;
+
 
 // ---- NUEVO: Calcular estado de certificados ----
 $totalActividades = $contadorAsistencias;
@@ -181,3 +198,19 @@ Swal.fire({
 });
 </script>
 <?php endif; ?>
+
+<?php if (!empty($nuevasInsignias)): ?>
+<script>
+Swal.fire({
+    title: "🏅 ¡Nueva Insignia!",
+    html: "Has desbloqueado:<br><strong><?= implode('<br>', $nuevasInsignias) ?></strong>",
+    icon: "success",
+    background: "#fff",
+    confirmButtonColor: "#00724f",
+    toast: false,
+    allowOutsideClick: false,
+    confirmButtonText: "¡Genial!"
+});
+</script>
+<?php endif; ?>
+
