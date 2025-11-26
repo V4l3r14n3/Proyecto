@@ -56,8 +56,8 @@ foreach ($todosLosCertificados as $cert) {
                 <td><?= htmlspecialchars($cert['fecha_actividad']) ?></td>
                 <td><?= htmlspecialchars($cert['horas_voluntariado']) ?> h</td>
                 <td>
-                    <a href="funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-accion btn-editar" target="_blank">Ver</a>
-                    <a href="funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-accion btn-editar" target="_blank">PDF</a>
+                    <a href="funciones/obtener_certificado.php?id=<?= $cert['_id'] ?>" class="btn-accion btn-editar" target="_blank">👁️ Ver</a>
+                    <a href="funciones/descargar_certificado.php?id=<?= $cert['_id'] ?>" class="btn-accion btn-editar" target="_blank">📄 PDF</a>
                 </td>
             </tr>
         <?php endforeach; ?>
