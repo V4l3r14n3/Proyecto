@@ -22,20 +22,20 @@ foreach ($todosLosCertificados as $cert) {
 
 // ---- NUEVO ---- Contar actividades asistidas ----
 $inscripciones = $bd->inscripciones->find([
-    'voluntario_id' => $_SESSION['usuario']['_id']['$oid'],
-    '$or' => [
-        ['asistio' => true],
-        ['asistio' => 'true'],
-        ['asistio' => 'sí'],
-        ['asistio' => 1]
+    '$and' => [
+        ['voluntario_id' => $_SESSION['usuario']['_id']['$oid']],
+        ['$or' => [
+            ['asistio' => true],
+            ['asistio' => 'true'],
+            ['asistio' => 'sí'],
+            ['asistio' => 1]
+        ]]
     ]
 ]);
 
 $contadorAsistencias = iterator_count($inscripciones);
-// 👇 Solo temporal, para probar
-echo "<pre>";
-echo "Asistencias encontradas: " . $contadorAsistencias;
-echo "</pre>";
+
+echo "<pre>Asistencias encontradas: $contadorAsistencias</pre>";
 
 $insignias = [
     ['nombre' => '🌱 Principiante', 'min' => 1],
