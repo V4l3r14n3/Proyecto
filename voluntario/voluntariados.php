@@ -29,22 +29,24 @@ if (!empty($_GET['ciudad'])) {
 }
 
 if (!empty($_GET['organizacion'])) {
-    $filtro['organizacion'] = [
-        '$regex' => trim($_GET['organizacion']),
-        '$options' => 'i'
-    ];
+    $palabras = explode(" ", trim($_GET['organizacion']));
+    $regexArray = [];
+
+    foreach ($palabras as $p) {
+        if ($p !== "") {
+            $regexArray[] = ['organizacion' => ['$regex' => $p, '$options' => 'i']];
+        }
+    }
+
+    if (!empty($regexArray)) {
+        $filtro['$and'] = $regexArray;
+    }
 }
 
 // Corrección: usar fecha_hora con regex
 if (!empty($_GET['fecha'])) {
     $filtro['fecha_hora'] = ['$regex' => $_GET['fecha']];
 }
-
-// 👉 Agrega esto aquí (solo para probar)
-$example = $bd->actividades->findOne();
-echo "<pre>";
-print_r($example);
-echo "</pre>";
 
 // Obtener eventos filtrados
 $voluntariados = $bd->actividades->find($filtro);
