@@ -30,11 +30,12 @@ $inscripciones = $bd->inscripciones->find([
         ['asistio' => 1]
     ]
 ]);
-echo "<pre>";
-echo "Asistencias: " . $contadorAsistencias;
-echo "</pre>";
 
 $contadorAsistencias = iterator_count($inscripciones);
+// 👇 Solo temporal, para probar
+echo "<pre>";
+echo "Asistencias encontradas: " . $contadorAsistencias;
+echo "</pre>";
 
 $insignias = [
     ['nombre' => '🌱 Principiante', 'min' => 1],
