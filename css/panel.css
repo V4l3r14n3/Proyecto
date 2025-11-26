@@ -107,10 +107,20 @@ button:hover, .logout:hover {
   background: #009c72;
 }
 
+/* Estilo general de botones del panel */
 button {
-  max-width: 300px;
-  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
   margin-top: 12px;
+}
+
+/* SOLO botones generales (no blog ni tabla) usan width 100% */
+.main-content .card button,
+.formulario-panel button,
+.perfil-form button {
+  width: 100%;
+  max-width: 300px;
 }
 
 /* === TARJETAS === */
@@ -289,59 +299,6 @@ input:focus, textarea:focus {
 .switch input:checked + .slider .moon { opacity: 1; }
 .switch input:not(:checked) + .slider .sun { opacity: 1; }
 
-/* =========================================================
-                  🌘 MODO OSCURO ACTIVO
-========================================================= */
-body.dark-mode {
-  background: #1b1b1b;
-  color: #ececec;
-}
-
-body.dark-mode .sidebar { background: #0f3027; }
-body.dark-mode .main-content { background: #1b1b1b; }
-
-body.dark-mode .card,
-body.dark-mode .formulario-panel,
-body.dark-mode .perfil-form,
-body.dark-mode .tabla {
-  background: #2d2d2d;
-  border-color: #444;
-}
-
-body.dark-mode input, body.dark-mode textarea {
-  background: #333;
-  color: #fff;
-  border: 1px solid #555;
-}
-
-body.dark-mode table {
-  background: #272727 !important;
-  color: #eaeaea !important;
-}
-
-body.dark-mode table th {
-  background: #006b54 !important;
-  color: #fff !important;
-}
-
-body.dark-mode table tr td {
-  border-bottom: 1px solid #444;
-}
-
-/* Hover más elegante */
-body.dark-mode table tr:hover {
-  background: #333 !important;
-  color: #d7ffd9 !important;
-}
-
-/* Botones en dark mode */
-body.dark-mode .btn-editar {
-  background: #00d49b;
-}
-
-body.dark-mode .btn-eliminar {
-  background: #ff4b4b;
-}
 
 /* Animación en filas */
 tr {
@@ -438,22 +395,7 @@ select option {
   padding: 10px;
 }
 
-/* === MODO OSCURO === */
-body.dark-mode select {
-  background: #2c2c2c;
-  border: 1px solid #666;
-  color: #fff;
-}
 
-body.dark-mode select:focus {
-  border-color: #00c291;
-  box-shadow: 0px 0px 6px rgba(0, 191, 166, 0.7);
-}
-
-body.dark-mode select option {
-  background: #222;
-  color: #eaeaea;
-}
 
 /* Contenedor principal del perfil */
 .main-content .perfil-form {
@@ -482,11 +424,6 @@ body.dark-mode select option {
     border-bottom: 1px solid #e0e0e0;
 }
 
-/* Campo de contraseña */
-.perfil-form input[type="password"] {
-    max-width: 300px;
-    margin-top: 5px;
-}
 
 /* Botón Guardar Cambios */
 .perfil-form button {
@@ -603,20 +540,68 @@ body.dark-mode select option {
 }
 
 /* Modo oscuro */
-body.dark-mode .btn-ver {
-    background: #00bfa6;
-    color: #1b1b1b;
+
+
+.post-card img,
+.card img {
+  border-radius: 10px;
 }
 
-body.dark-mode .btn-ver:hover {
-    background: #00d4b0;
+.post-card {
+  width:100%;
+  max-width: 800px;
 }
 
-body.dark-mode .btn-descargar {
-    background: #00724f;
-    color: white;
+.post-card p {
+  font-size: 1rem;
+}
+.post-card h3 {
+  margin-top: 15px;
+  color: #00724f;
+}
+.card {
+    border-radius: 12px;
 }
 
-body.dark-mode .btn-descargar:hover {
-    background: #008a65;
+.card img {
+    border-radius: 12px 12px 0 0;
 }
+
+.card-body {
+    font-size: 1rem;
+}
+/* ===== BLOG CARDS FIX ===== */
+.post-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 750px;
+    width: 100%;
+    margin: 20px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform .2s;
+}
+
+.post-card:hover {
+    transform: translateY(-3px);
+}
+
+.post-card img {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 15px auto;
+    border-radius: 10px;
+}
+
+/* Botones del blog */
+.post-card button {
+    width: auto;
+    padding: 10px 16px;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+.post-card button:last-child {
+    margin-right: 0;
+}
+
