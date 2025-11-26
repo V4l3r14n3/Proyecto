@@ -29,7 +29,9 @@ if (!empty($_GET['ciudad'])) {
 }
 
 if (!empty($_GET['organizacion'])) {
-    $filtro['organizacion'] = ['$regex' => $_GET['organizacion'], '$options' => 'i'];
+    $texto = trim($_GET['organizacion']);
+    $texto = preg_quote($texto, '/'); // evita errores con espacios o caracteres raros
+    $filtro['organizacion'] = ['$regex' => $texto, '$options' => 'i'];
 }
 
 // Corrección: usar fecha_hora con regex
