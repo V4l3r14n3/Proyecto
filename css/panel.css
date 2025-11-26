@@ -605,3 +605,20 @@ select option {
     margin-right: 0;
 }
 
+.insignias-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.insignia {
+    background: #ffd84d;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.insignia.oro {
+    background: #ffd700;
+    color: #fff;
+}

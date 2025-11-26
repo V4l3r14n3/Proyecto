@@ -19,6 +19,27 @@ foreach ($todosLosCertificados as $cert) {
         $misCertificados[] = $cert;
     }
 }
+
+// ---- NUEVO ---- Contar actividades asistidas ----
+$inscripciones = $bd->inscripciones->find([
+    'voluntario_id' => $_SESSION['usuario']['_id']['$oid'],
+    'asistio' => true
+]);
+$contadorAsistencias = iterator_count($inscripciones);
+
+$insignias = [
+    ['nombre' => '🌱 Principiante', 'min' => 1],
+    ['nombre' => '🔥 Activo', 'min' => 3],
+    ['nombre' => '🏆 Líder', 'min' => 5],
+    ['nombre' => '💎 Leyenda', 'min' => 10],
+];
+
+$insigniasDesbloqueadas = [];
+foreach ($insignias as $badge) {
+    if ($contadorAsistencias >= $badge['min']) {
+        $insigniasDesbloqueadas[] = $badge['nombre'];
+    }
+}
 ?>
 
 <h2>Mi Perfil 🏷️</h2>
@@ -65,6 +86,18 @@ foreach ($todosLosCertificados as $cert) {
 
 <?php else: ?>
     <p style="text-align:center; color:#777;">Aún no tienes certificados.</p>
+<?php endif; ?>
+
+<h2>🏅 Mis Insignias</h2>
+
+<?php if (count($insigniasDesbloqueadas) > 0): ?>
+    <div class="insignias-container">
+        <?php foreach ($insigniasDesbloqueadas as $badge): ?>
+            <span class="insignia"><?= $badge ?></span>
+        <?php endforeach; ?>
+    </div>
+<?php else: ?>
+    <p style="color:#777;">Aún no tienes insignias. ¡Participa para ganar una! 🎉</p>
 <?php endif; ?>
 
 <?php include 'includes/layout_footer.php'; ?>
