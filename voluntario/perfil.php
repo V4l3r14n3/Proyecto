@@ -20,21 +20,15 @@ foreach ($todosLosCertificados as $cert) {
     }
 }
 
-// ---- NUEVO ---- Contar actividades asistidas ----
+// ---- Contar actividades asistidas ----
 $inscripciones = $bd->inscripciones->find([
     'voluntario_id' => $_SESSION['usuario']['_id']['$oid'],
-    'asistio' => ['$in' => [true, "true", 1, "1", "sí", "Sí", "SI", "si"]]
+    'asistio' => true
 ]);
-echo "<pre>";
-foreach ($bd->inscripciones->find(['voluntario_id' => $_SESSION['usuario']['_id']['$oid']]) as $row) {
-    var_dump($row['asistio']);
-}
-echo "</pre>";
 
 $contadorAsistencias = iterator_count($inscripciones);
-echo "<pre>Asistencias encontradas: $contadorAsistencias</pre>";
-// Definir insignias y criterios
 
+// Definir insignias y criterios
 $insignias = [
     ['nombre' => '🌱 Principiante', 'min' => 1],
     ['nombre' => '🔥 Activo', 'min' => 3],
@@ -48,6 +42,12 @@ foreach ($insignias as $badge) {
         $insigniasDesbloqueadas[] = $badge['nombre'];
     }
 }
+
+// ---- NUEVO: Calcular estado de certificados ----
+$totalActividades = $contadorAsistencias;
+$totalCertificados = count($misCertificados);
+$pendientes = max(0, $totalActividades - $totalCertificados);
+
 ?>
 
 <h2>Mi Perfil 🏷️</h2>
@@ -65,8 +65,33 @@ foreach ($insignias as $badge) {
     <button type="submit">Guardar Cambios</button>
 </form>
 
-<br><br>
 
+<!-- 🔥 NUEVO: Resumen gráfico -->
+<br><br>
+<h2>💳 Estado de Certificaciones</h2>
+<div class="estado-box">
+    <p><strong>Actividades asistidas:</strong> <?= $totalActividades ?></p>
+    <p><strong>Certificados generados:</strong> <?= $totalCertificados ?></p>
+    <p><strong>Certificados pendientes:</strong>
+        <span style="color: <?= $pendientes > 0 ? 'red' : 'green' ?>;">
+        <?= $pendientes ?>
+        </span>
+    </p>
+
+    <div class="barra-progreso">
+        <?php 
+        $porcentaje = $totalActividades > 0 ? ($totalCertificados / $totalActividades) * 100 : 0;
+        ?>
+        <div class="relleno" style="width: <?= $porcentaje ?>%;"></div>
+    </div>
+
+    <p style="font-size:14px; color:#666; text-align:center;">
+        <?= round($porcentaje) ?>% del proceso completado
+    </p>
+</div>
+
+
+<br><br>
 <h2>📜 Mis Certificados</h2>
 
 <?php if (count($misCertificados) > 0): ?>
@@ -96,6 +121,7 @@ foreach ($insignias as $badge) {
     <p style="text-align:center; color:#777;">Aún no tienes certificados.</p>
 <?php endif; ?>
 
+
 <h2>🏅 Mis Insignias</h2>
 
 <?php if (count($insigniasDesbloqueadas) > 0): ?>
@@ -107,6 +133,33 @@ foreach ($insignias as $badge) {
 <?php else: ?>
     <p style="color:#777;">Aún no tienes insignias. ¡Participa para ganar una! 🎉</p>
 <?php endif; ?>
+
+
+<style>
+.estado-box {
+    border: 2px solid #00724f;
+    padding: 15px;
+    border-radius: 12px;
+    max-width: 400px;
+    background: #f8fff9;
+}
+
+.barra-progreso {
+    width: 100%;
+    height: 15px;
+    background: #ddd;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.barra-progreso .relleno {
+    height: 100%;
+    background: #00724f;
+    border-radius: 10px;
+    transition: width .5s;
+}
+</style>
+
 
 <?php include 'includes/layout_footer.php'; ?>
 
