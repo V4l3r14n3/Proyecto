@@ -3,7 +3,7 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/rutas.php";
 
 // Bloquear acceso si no es admin
-if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'Administrador') {
     header("Location: " . BASE_URL . "pages/login.php");
     exit();
 }
