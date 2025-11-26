@@ -9,20 +9,39 @@ $usuario = $bd->usuarios->findOne(['email' => $email]);
 
 if ($usuario && $usuario['password'] === $password) {
 
-    // Si es organización y está pendiente → bloqueo
-    if ($usuario['rol'] === 'organizacion' && ($usuario['estado'] ?? 'pendiente') !== 'aprobado') {
-        $titulo = "Cuenta en revisión";
-        $mensaje = "Tu organización aún no ha sido aprobada por un administrador.";
-        $tipo = "warning";
-        $link = "login.php";
-        include '../includes/mensaje.php';
-        exit();
+    // Si es organización, validar estados
+    if ($usuario['rol'] === 'organizacion') {
+
+        // ---- ORGANIZACIÓN RECHAZADA ----
+        if (($usuario['estado'] ?? 'pendiente') === 'rechazado') {
+
+            $_SESSION['usuario_temporal'] = [
+                '_id' => (string)$usuario['_id'],
+                'email' => $usuario['email'],
+                'nombre_org' => $usuario['nombre_org'],
+                'verificacion_url' => $usuario['verificacion_url'] ?? '',
+                'motivo_rechazo' => $usuario['motivo_rechazo'] ?? ''
+            ];
+
+            header("Location: reintentar_verificacion.php");
+            exit();
+        }
+
+        // ---- ORGANIZACIÓN PENDIENTE ----
+        if (($usuario['estado'] ?? 'pendiente') === 'pendiente') {
+
+            $titulo = "Cuenta en revisión";
+            $mensaje = "Tu organización aún no ha sido aprobada por un administrador.";
+            $tipo = "warning";
+            $link = "login.php";
+            include '../includes/mensaje.php';
+            exit();
+        }
     }
 
-    // Guardar sesión correctamente (MongoDocument → array)
+    // ---- LOGIN NORMAL ----
     $_SESSION['usuario'] = json_decode(json_encode($usuario), true);
 
-    // Redirección según rol
     if ($usuario['rol'] === 'voluntario') {
         header("Location: ../voluntario/index.php");
     } elseif ($usuario['rol'] === 'organizacion') {
@@ -33,6 +52,7 @@ if ($usuario && $usuario['password'] === $password) {
         header("Location: ../index.php");
     }
     exit();
+
 } else {
     $titulo = "Error de inicio de sesión";
     $mensaje = "El correo o la contraseña son incorrectos.";
