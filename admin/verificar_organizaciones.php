@@ -16,6 +16,7 @@ $pendientes = $bd->usuarios->find([
         <tr>
             <th>Nombre organización</th>
             <th>Correo</th>
+            <th>URL de verificación</th>
             <th>Acciones</th>
         </tr>
 
@@ -23,6 +24,7 @@ $pendientes = $bd->usuarios->find([
         <tr>
             <td><?= htmlspecialchars($org['nombre_org'] ?? 'No definido') ?></td>
             <td><?= htmlspecialchars($org['email']) ?></td>
+            <td><?= htmlspecialchars($org['verificacion_url'] ?? 'No proporcionado') ?></td>
             <td>
                 <button class="aprobar" data-id="<?= $org['_id'] ?>">✅ Aprobar</button>
                 <button class="rechazar" data-id="<?= $org['_id'] ?>">❌ Rechazar</button>
