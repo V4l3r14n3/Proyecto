@@ -41,8 +41,9 @@ if (!empty($_GET['fecha'])) {
 }
 
 // 👉 Agrega esto aquí (solo para probar)
+$example = $bd->actividades->findOne();
 echo "<pre>";
-print_r($filtro);
+print_r($example);
 echo "</pre>";
 
 // Obtener eventos filtrados
