@@ -2,6 +2,7 @@
 session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/rutas.php";
 include '../includes/conexion.php';
+include '../includes/header.php'; 
 
 if (!isset($_SESSION['usuario_temporal'])) {
     header("Location: login.php");
@@ -60,6 +61,6 @@ document.getElementById("reenvioForm").addEventListener("submit", async function
     });
 });
 </script>
-
+<?php include '../includes/footer.php'; ?>
 </body>
 </html>
