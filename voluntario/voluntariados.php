@@ -39,6 +39,11 @@ if (!empty($_GET['fecha'])) {
     $filtro['fecha_hora'] = ['$regex' => $_GET['fecha']];
 }
 
+// 👉 Agrega esto aquí (solo para probar)
+echo "<pre>";
+print_r($filtro);
+echo "</pre>";
+
 // Obtener eventos filtrados
 $voluntariados = $bd->actividades->find($filtro);
 
