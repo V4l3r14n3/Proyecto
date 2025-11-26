@@ -4,4 +4,5 @@ define("INCLUDES", $_SERVER['DOCUMENT_ROOT'] . "/Proyecto/includes/");
 define("CSS_URL", BASE_URL . "css/");
 define("ORG_URL", BASE_URL . "organizacion/");
 define("VOL_URL", BASE_URL . "voluntario/");
+define("ADMIN_URL", BASE_URL . "admin/");
 ?>
