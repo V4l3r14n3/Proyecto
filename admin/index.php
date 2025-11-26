@@ -1,7 +1,12 @@
 <?php
+session_start();
 require_once "../includes/conexion.php";
-require_once "includes/layout.php"; 
 
+// Verificar rol admin
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
+    header("Location: ../pages/login.php");
+    exit();
+}
 
 // Obtener organizaciones pendientes
 $pendientes = $bd->usuarios->find(['rol' => 'organizacion', 'estado' => 'pendiente']);
@@ -36,4 +41,4 @@ $pendientes = $bd->usuarios->find(['rol' => 'organizacion', 'estado' => 'pendien
     </table>
 </div>
 
-<?php include "includes/layout_footer.php"; ?>
+<?php include '../includes/footer.php'; ?>
