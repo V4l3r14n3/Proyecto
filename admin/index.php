@@ -1,6 +1,7 @@
-<?php
-session_start();
+<?php 
 require_once "../includes/conexion.php";
+require_once "includes/layout.php"; 
+?>
 
 // Verificar rol admin
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
@@ -12,7 +13,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') {
 $pendientes = $bd->usuarios->find(['rol' => 'organizacion', 'estado' => 'pendiente']);
 ?>
 
-<?php include '../includes/header.php'; ?>
+
 
 <div class="main-content">
     <h2>Panel Admin 👑</h2>
