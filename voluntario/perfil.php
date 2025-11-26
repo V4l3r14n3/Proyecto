@@ -28,6 +28,12 @@ $inscripciones = $bd->inscripciones->find([
 
 $contadorAsistencias = iterator_count($inscripciones);
 
+// Si no existe registro de asistencia, usar los certificados como respaldo
+if ($contadorAsistencias == 0 && count($misCertificados) > 0) {
+    $contadorAsistencias = count($misCertificados);
+}
+
+
 // Definir insignias y criterios
 $insignias = [
     ['nombre' => '🌱 Principiante', 'min' => 1],
